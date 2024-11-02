@@ -1,0 +1,331 @@
+[
+	{
+		"name": "Default",
+		"buttonClass": "default",
+		"icon": "generic-website.svg",
+		"text": "Website"
+	},
+	{
+		"name": "Amazon",
+		"buttonClass": "amazon",
+		"icon": "amazon.svg",
+		"text": "Amazon Wishlist"
+	},
+	{
+		"name": "Amazon Music",
+		"buttonClass": "amazon-music",
+		"icon": "amazon-music.svg",
+		"text": "Listen on Amazon Music"
+	},
+	{
+		"name": "Apple App Store",
+		"buttonClass": "appstore",
+		"icon": "apple.svg",
+		"text": "Apple App Store"
+	},
+	{
+		"name": "Apple Music",
+		"buttonClass": "apple-music",
+		"icon": "apple-music.svg",
+		"text": "Listen on Apple Music"
+	},
+	{
+		"name": "Apple Music Alternate",
+		"buttonClass": "apple-music-alt",
+		"icon": "apple-music-alt.svg",
+		"text": "Listen on Apple Music"
+	},
+	{
+		"name": "Apple Podcasts",
+		"buttonClass": "apple-podcasts",
+		"icon": "apple-podcasts.svg",
+		"text": "Listen on Apple Podcasts"
+	},
+	{
+		"name": "Apple Podcasts Alternate",
+		"buttonClass": "apple-podcasts-alt",
+		"icon": "apple-podcasts-alt.svg",
+		"text": "Listen on Apple Podcasts"
+	},
+	{ "name": "Bandcamp", "buttonClass": "bandcamp", "icon": "bandcamp.svg", "text": "Bandcamp" },
+	{ "name": "Behance", "buttonClass": "behance", "icon": "behance.svg", "text": "Behance" },
+	{ "name": "Bluesky", "buttonClass": "bluesky", "icon": "bluesky.svg", "text": "Bluesky" },
+	{
+		"name": "Bluesky Alt",
+		"buttonClass": "bluesky-alt",
+		"icon": "bluesky-alt.svg",
+		"text": "Bluesky"
+	},
+	{
+		"name": "Buy Me A Coffee",
+		"buttonClass": "coffee",
+		"icon": "buy-me-a-coffee.svg",
+		"text": "Buy Me A Coffee"
+	},
+	{ "name": "Cal.com", "buttonClass": "cal", "icon": "cal.svg", "text": "Schedule with Cal.com" },
+	{
+		"name": "Calendly",
+		"buttonClass": "calendly",
+		"icon": "calendly.svg",
+		"text": "Schedule with Calendly"
+	},
+	{
+		"name": "Cash App",
+		"buttonClass": "cash-app",
+		"icon": "cash-app-dollar.svg",
+		"text": "Cash App"
+	},
+	{ "name": "Dev.to", "buttonClass": "dev-to", "icon": "dev-to.svg", "text": "Dev.to" },
+	{ "name": "Discogs", "buttonClass": "discogs", "icon": "discogs.svg", "text": "Discogs" },
+	{
+		"name": "Discogs Alt",
+		"buttonClass": "discogs-alt",
+		"icon": "discogs-alt.svg",
+		"text": "Discogs"
+	},
+	{ "name": "Discord", "buttonClass": "discord", "icon": "discord.svg", "text": "Discord" },
+	{ "name": "Dribbble", "buttonClass": "dribbble", "icon": "dribbble.svg", "text": "Dribbble" },
+	{ "name": "Etsy", "buttonClass": "etsy", "icon": "etsy.svg", "text": "Shop on Etsy" },
+	{
+		"name": "Facebook",
+		"buttonClass": "faceb",
+		"icon": "facebook.svg",
+		"text": "Find us on Facebook"
+	},
+	{
+		"name": "Facebook Messenger",
+		"buttonClass": "messenger",
+		"icon": "messenger.svg",
+		"text": "Chat on Messenger"
+	},
+	{ "name": "Figma", "buttonClass": "figma", "icon": "figma.svg", "text": "Figma Community" },
+	{ "name": "Fiverr", "buttonClass": "fiverr", "icon": "fiverr.svg", "text": "Fiverr Gig" },
+	{ "name": "Flickr", "buttonClass": "flickr", "icon": "flickr.svg", "text": "Flickr" },
+	{ "name": "GitHub", "buttonClass": "github", "icon": "github.svg", "text": "GitHub" },
+	{ "name": "GitLab", "buttonClass": "gitlab", "icon": "gitlab.svg", "text": "GitLab" },
+	{ "name": "GoFundMe", "buttonClass": "gofundme", "icon": "gofundme.svg", "text": "GoFundMe" },
+	{ "name": "Goodreads", "buttonClass": "goodreads", "icon": "goodreads.svg", "text": "Goodreads" },
+	{
+		"name": "Google Drive",
+		"buttonClass": "google-black",
+		"icon": "google-drive.svg",
+		"text": "View in Google Drive"
+	},
+	{
+		"name": "Google Play Store",
+		"buttonClass": "playstore",
+		"icon": "google-play.svg",
+		"text": "Google Play Store"
+	},
+	{
+		"name": "Google Scholar",
+		"buttonClass": "google-scholar",
+		"icon": "google-scholar.svg",
+		"text": "Google Scholar"
+	},
+	{ "name": "Hashnode", "buttonClass": "hashnode", "icon": "hashnode.svg", "text": "Hashnode" },
+	{ "name": "Instagram", "buttonClass": "instagram", "icon": "instagram.svg", "text": "Instagram" },
+	{ "name": "Kick", "buttonClass": "kick", "icon": "kick.svg", "text": "Kick" },
+	{ "name": "Kick Alt", "buttonClass": "kick-alt", "icon": "kick-alt.svg", "text": "Kick" },
+	{
+		"name": "Kickstarter",
+		"buttonClass": "kickstarter",
+		"icon": "kickstarter.svg",
+		"text": "Kickstarter"
+	},
+	{ "name": "Kit", "buttonClass": "kit", "icon": "kit.svg", "text": "Kit" },
+	{ "name": "Ko-fi", "buttonClass": "ko-fi", "icon": "ko-fi.svg", "text": "Ko-fi" },
+	{ "name": "Last.fm", "buttonClass": "last-fm", "icon": "last-fm.svg", "text": "Last.fm" },
+	{
+		"name": "Letterboxd",
+		"buttonClass": "letterboxd",
+		"icon": "letterboxd.svg",
+		"text": "Letterboxd"
+	},
+	{ "name": "Line", "buttonClass": "line", "icon": "line.svg", "text": "Line" },
+	{ "name": "LinkedIn", "buttonClass": "linked", "icon": "linkedin.svg", "text": "LinkedIn" },
+	{ "name": "Mailchimp", "buttonClass": "mailchimp", "icon": "mailchimp.svg", "text": "Mailchimp" },
+	{ "name": "Mastodon", "buttonClass": "mastodon", "icon": "mastodon.svg", "text": "Mastodon" },
+	{ "name": "Medium", "buttonClass": "medium", "icon": "medium.svg", "text": "Medium" },
+	{
+		"name": "Microsoft Store",
+		"buttonClass": "microsoft",
+		"icon": "microsoft.svg",
+		"text": "Get it from Microsoft"
+	},
+	{ "name": "NGL", "buttonClass": "ngl", "icon": "ngl.svg", "text": "NGL" },
+	{ "name": "Notion", "buttonClass": "notion", "icon": "notion.svg", "text": "Notion" },
+	{
+		"name": "OnlyFans",
+		"buttonClass": "onlyfans",
+		"icon": "onlyfans.svg",
+		"text": "OnlyFans (18+)"
+	},
+	{ "name": "Patreon", "buttonClass": "patreon", "icon": "patreon.svg", "text": "Patreon" },
+	{ "name": "PayPal", "buttonClass": "paypal", "icon": "paypal.svg", "text": "PayPal" },
+	{ "name": "Pinterest", "buttonClass": "pinterest", "icon": "pinterest.svg", "text": "Pinterest" },
+	{
+		"name": "Product Hunt",
+		"buttonClass": "product-hunt",
+		"icon": "product-hunt.svg",
+		"text": "Product Hunt"
+	},
+	{ "name": "Read.cv", "buttonClass": "read-cv", "icon": "read-cv.svg", "text": "Read.cv" },
+	{ "name": "Redbubble", "buttonClass": "redbubble", "icon": "redbubble.svg", "text": "Redbubble" },
+	{ "name": "Reddit", "buttonClass": "reddit", "icon": "reddit.svg", "text": "Reddit" },
+	{ "name": "Revolut", "buttonClass": "revolut", "icon": "revolut.svg", "text": "Revolut" },
+	{ "name": "Shop", "buttonClass": "shop", "icon": "shop.svg", "text": "Buy with Shop" },
+	{ "name": "Signal", "buttonClass": "signal", "icon": "signal.svg", "text": "Signal" },
+	{ "name": "Slack", "buttonClass": "slack", "icon": "slack.svg", "text": "Join Slack" },
+	{ "name": "Snapchat", "buttonClass": "snapchat", "icon": "snapchat.svg", "text": "Snapchat" },
+	{
+		"name": "SoundCloud",
+		"buttonClass": "soundcloud",
+		"icon": "soundcloud.svg",
+		"text": "SoundCloud"
+	},
+	{
+		"name": "Spotify",
+		"buttonClass": "spotify",
+		"icon": "spotify.svg",
+		"text": "Listen on Spotify"
+	},
+	{
+		"name": "Spotify Alt",
+		"buttonClass": "spotify-alt",
+		"icon": "spotify-alt.svg",
+		"text": "Listen on Spotify"
+	},
+	{ "name": "Square", "buttonClass": "square", "icon": "square.svg", "text": "Buy with Square" },
+	{
+		"name": "Stack Overflow",
+		"buttonClass": "stack-overflow",
+		"icon": "stack-overflow.svg",
+		"text": "Stack Overflow"
+	},
+	{ "name": "Steam", "buttonClass": "steam", "icon": "steam.svg", "text": "Steam" },
+	{ "name": "Steam Alt", "buttonClass": "steam-alt", "icon": "steam.svg", "text": "Steam" },
+	{ "name": "Strava", "buttonClass": "strava", "icon": "strava.svg", "text": "Strava" },
+	{ "name": "Substack", "buttonClass": "substack", "icon": "substack.svg", "text": "Substack" },
+	{ "name": "Telegram", "buttonClass": "telegram", "icon": "telegram.svg", "text": "Telegram" },
+	{ "name": "Threads", "buttonClass": "threads", "icon": "threads.svg", "text": "Threads" },
+	{ "name": "Threema", "buttonClass": "threema", "icon": "threema.svg", "text": "Threema" },
+	{ "name": "TikTok", "buttonClass": "tiktok", "icon": "tiktok.svg", "text": "TikTok" },
+	{ "name": "Trakt", "buttonClass": "trakt", "icon": "trakt.svg", "text": "Trakt" },
+	{ "name": "Trello", "buttonClass": "trello", "icon": "trello.svg", "text": "Trello" },
+	{ "name": "Tumblr", "buttonClass": "tumb", "icon": "tumblr.svg", "text": "Tumblr" },
+	{ "name": "Twitch", "buttonClass": "twitch", "icon": "twitch.svg", "text": "Twitch" },
+	{ "name": "Unsplash", "buttonClass": "unsplash", "icon": "unsplash.svg", "text": "Unsplash" },
+	{ "name": "Untappd", "buttonClass": "untappd", "icon": "untappd.svg", "text": "Untappd" },
+	{ "name": "Upwork", "buttonClass": "upwork", "icon": "upwork.svg", "text": "Upwork" },
+	{ "name": "Venmo", "buttonClass": "venmo", "icon": "venmo.svg", "text": "Venmo" },
+	{ "name": "Vimeo", "buttonClass": "vimeo", "icon": "vimeo.svg", "text": "Vimeo" },
+	{ "name": "VSCO", "buttonClass": "vsco", "icon": "vsco.svg", "text": "VSCO" },
+	{ "name": "WhatsApp", "buttonClass": "whatsapp", "icon": "whatsapp.svg", "text": "WhatsApp" },
+	{ "name": "WordPress", "buttonClass": "wordpress", "icon": "wordpress.svg", "text": "WordPress" },
+	{ "name": "X", "buttonClass": "x", "icon": "x.svg", "text": "Follow on X" },
+	{ "name": "YouTube", "buttonClass": "yt", "icon": "youtube.svg", "text": "YouTube" },
+	{
+		"name": "YouTube Music",
+		"buttonClass": "yt",
+		"icon": "youtube-music.svg",
+		"text": "Listen on YouTube Music"
+	},
+	{ "name": "Zoom", "buttonClass": "zoom", "icon": "zoom.svg", "text": "Join Zoom Webinar" },
+	{
+		"name": "Generic Blog",
+		"buttonClass": "default",
+		"icon": "generic-blog.svg",
+		"text": "Read our blog"
+	},
+	{
+		"name": "Generic Calendar",
+		"buttonClass": "default",
+		"icon": "generic-calendar.svg",
+		"text": "Event RSVP"
+	},
+	{
+		"name": "Generic Cloud",
+		"buttonClass": "default",
+		"icon": "generic-cloud.svg",
+		"text": "Download File"
+	},
+	{
+		"name": "Generic Code",
+		"buttonClass": "default",
+		"icon": "generic-code.svg",
+		"text": "View the code"
+	},
+	{
+		"name": "Generic Computer",
+		"buttonClass": "default",
+		"icon": "generic-computer.svg",
+		"text": "Homelab Setup"
+	},
+	{
+		"name": "Generic Email",
+		"buttonClass": "default",
+		"icon": "generic-email.svg",
+		"text": "Email Us"
+	},
+	{
+		"name": "Generic Email Alt",
+		"buttonClass": "default",
+		"icon": "generic-email-alt.svg",
+		"text": "Email Us"
+	},
+	{
+		"name": "Generic Homepage",
+		"buttonClass": "default",
+		"icon": "generic-homepage.svg",
+		"text": "Visit Homepage"
+	},
+	{
+		"name": "Generic Map",
+		"buttonClass": "default",
+		"icon": "generic-map.svg",
+		"text": "Get Directions"
+	},
+	{
+		"name": "Generic Phone",
+		"buttonClass": "default",
+		"icon": "generic-phone.svg",
+		"text": "Call Us"
+	},
+	{
+		"name": "Generic Review",
+		"buttonClass": "default",
+		"icon": "generic-review.svg",
+		"text": "Leave us a review"
+	},
+	{
+		"name": "Generic RSS",
+		"buttonClass": "default",
+		"icon": "generic-rss.svg",
+		"text": "RSS Subscribe"
+	},
+	{
+		"name": "Generic Shopping Bag",
+		"buttonClass": "default",
+		"icon": "generic-shopping-bag.svg",
+		"text": "Visit Our Shop"
+	},
+	{
+		"name": "Generic Shopping Tag",
+		"buttonClass": "default",
+		"icon": "generic-shopping-tag.svg",
+		"text": "10% Discount"
+	},
+	{
+		"name": "Generic SMS",
+		"buttonClass": "default",
+		"icon": "generic-sms.svg",
+		"text": "Send us a message"
+	},
+	{
+		"name": "Generic Website",
+		"buttonClass": "default",
+		"icon": "generic-website.svg",
+		"text": "Visit Website"
+	}
+]

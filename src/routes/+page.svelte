@@ -1,12 +1,12 @@
 <script lang="ts">
-	//import {data} from '$lib/store/data'
+	import preset from './preset.json';
 
 	import { onMount } from 'svelte';
 
 	let isLogoEditing = $state(false);
 	let isLinkEditing = $state(false);
 
-	let underName=$state("demo");
+	let underName = $state('demo');
 
 	const iconRoot = 'https://dl.eeurl.com/svg/icon/brand/'; // 'https://linktree.ar.io/images/icons/';
 	let data = $state({
@@ -49,13 +49,22 @@
 		]
 	});
 
-	onMount(() => {
+	onMount(async () => {
 		const storageData = localStorage.getItem('data');
 		console.log(storageData);
 		if (storageData) {
 			data = JSON.parse(storageData);
 		}
+		//const response = await fetch('preset.json'); // 替换为您的JSON文件路径
+		//preset = await response.json();
+		//console.log(preset);
 	});
+
+	let selectedPreset = $state(preset[0]);
+	let addLinkClass = $state(preset[0].buttonClass);
+	let addLinkIcon = $state(iconRoot + preset[0].icon);
+	let addLinkText = $state(preset[0].text);
+	let addLinkUrl = $state('https://'+underName+'_linktree.ar.io');
 
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
@@ -64,6 +73,17 @@
 
 	function deleteLink(index: number) {
 		data.links.splice(index, 1);
+	}
+
+	function onchange() {
+		addLinkClass = selectedPreset.buttonClass;
+		addLinkIcon = iconRoot+ selectedPreset.icon;
+		addLinkText = selectedPreset.text;
+	}
+
+	function addLink() {
+		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
+		data.links.push(item);
 	}
 </script>
 
@@ -158,17 +178,12 @@
 	<br />
 	<div>
 		<label for="class">Preset</label>
-		<select id="class" class="form-control">
-			<option value="default">Default</option>
-			<option value="github"></option>
-			<option value="gitlab">GitLab</option>
-			<option value="instagram">Instagram</option>
-			<option value="linkedin">LinkedIn</option>
-			<option value="mastodon">Mastodon</option>
-			<option value="medium">Medium</option>
-			<option value="pinterest">Pinterest</option>
-			<option value="telegram">Telegram</option>
-			<option value="x">X</option>
+		<select id="class" class="form-control" bind:value={selectedPreset} onchange={onchange}>
+			{#each preset as item}
+				<option value={item}>
+					{item.name}
+				</option>
+			{/each}
 		</select>
 	</div>
 
@@ -177,9 +192,8 @@
 		<input
 			class="form-control"
 			type="text"
-			id="custom_icon"
 			placeholder="Enter Your Icon URL OR Keep Default"
-			value=""
+			value={addLinkIcon}
 		/>
 	</div>
 	<div>
@@ -187,27 +201,20 @@
 		<input
 			class="form-control"
 			type="text"
-			id="custom_text"
 			placeholder="Enter Your Link Text Or Keep Default"
-			value=""
+			value={addLinkText}
 		/>
 	</div>
 	<div>
 		<label for="custom_text">Link</label>
-		<input
-			class="form-control"
-			type="text"
-			id="custom_text"
-			placeholder="Enter Your Link URL"
-			value=""
-		/>
+		<input class="form-control" type="text" placeholder="Enter Your Link URL" value={addLinkUrl} />
 	</div>
 
-	<a class="button button-letterboxd" href="#" target="_blank" rel="noopener" role="button"
-		><img class="icon" aria-hidden="true" src="images/icons/letterboxd.svg" alt="" />Letterboxd</a
+	<a class="button button-{addLinkClass}" href={addLinkUrl} target="_blank" rel="noopener" role="button"
+		><img class="icon" aria-hidden="true" src="{addLinkIcon}" alt="" />{addLinkText}</a
 	>
 	<br />
-	<button type="submit">Add Link</button>
+	<button type="submit" onclick={addLink}>Add Link</button>
 	<br />
 </div>
 
