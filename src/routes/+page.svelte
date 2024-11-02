@@ -4,6 +4,9 @@
 	import { onMount } from 'svelte';
 
 	let isLogoEditing = $state(false);
+	let isLinkEditing = $state(false);
+
+	let underName=$state("demo");
 
 	const iconRoot = 'https://dl.eeurl.com/svg/icon/brand/'; // 'https://linktree.ar.io/images/icons/';
 	let data = $state({
@@ -130,70 +133,100 @@
 	> <sup title="delete" style="color:red" onclick={() => deleteLink(index)}>✖</sup>
 {/each}
 
+<hr />
+<button
+	class:hidden={isLinkEditing}
+	onclick={() => {
+		isLinkEditing = true;
+	}}>+ Add Custom Link</button
+>
+<br />
 
-<hr/>
+<div
+	style="border:1px solid gray;padding:8px; background-color:#e3f2fd;border-radius:4px"
+	class:hidden={!isLinkEditing}
+>
+	<div style="text-align: right;">
+		<span
+			onclick={() => {
+				isLinkEditing = false;
+			}}
+		>
+			✖close</span
+		>
+	</div>
+	<br />
+	<div>
+		<label for="class">Preset</label>
+		<select id="class" class="form-control">
+			<option value="default">Default</option>
+			<option value="github"></option>
+			<option value="gitlab">GitLab</option>
+			<option value="instagram">Instagram</option>
+			<option value="linkedin">LinkedIn</option>
+			<option value="mastodon">Mastodon</option>
+			<option value="medium">Medium</option>
+			<option value="pinterest">Pinterest</option>
+			<option value="telegram">Telegram</option>
+			<option value="x">X</option>
+		</select>
+	</div>
 
-<div>
-	<span 
-		style="display: inline; border:2px solid gray; border-radius: 4px;padding:4px;margin:12px;background-color:#333;color:#ccc;font-weight:bolder"
-		>+ Add Brand Link</span>
-		
-		<a
-		style="display: inline; border:2px solid gray; border-radius: 4px;padding:4px;margin:12px;background-color:#333;color:#ccc;font-weight:bolder"
-		>+ Add Custom Link</a
+	<div>
+		<label for="custom_icon">Icon</label>
+		<input
+			class="form-control"
+			type="text"
+			id="custom_icon"
+			placeholder="Enter Your Icon URL OR Keep Default"
+			value=""
+		/>
+	</div>
+	<div>
+		<label for="custom_text">Text</label>
+		<input
+			class="form-control"
+			type="text"
+			id="custom_text"
+			placeholder="Enter Your Link Text Or Keep Default"
+			value=""
+		/>
+	</div>
+	<div>
+		<label for="custom_text">Link</label>
+		<input
+			class="form-control"
+			type="text"
+			id="custom_text"
+			placeholder="Enter Your Link URL"
+			value=""
+		/>
+	</div>
+
+	<a class="button button-letterboxd" href="#" target="_blank" rel="noopener" role="button"
+		><img class="icon" aria-hidden="true" src="images/icons/letterboxd.svg" alt="" />Letterboxd</a
 	>
-</div>
-<br>
-
-<div id="addBrand" style="border:1px dashed gray;padding:8px">
-	<label for="class">Brand</label>
-	<select id="class">
-		<option value="default">Default</option>
-		<option value="github"></option>
-		<option value="gitlab">GitLab</option>
-		<option value="instagram">Instagram</option>
-		<option value="linkedin">LinkedIn</option>
-		<option value="mastodon">Mastodon</option>
-		<option value="medium">Medium</option>
-		<option value="pinterest">Pinterest</option>
-		<option value="telegram">Telegram</option>
-		<option value="x">X</option>
-	</select>
-	<label for="href">Link:</label>
-	<input id="href" type="text" placeholder="Enter Your URL" />
-
-	<button type="submit">Add</button>
+	<br />
+	<button type="submit">Add Link</button>
+	<br />
 </div>
 
-<form>
-	<label for="class">Style</label>
-	<input id="href" type="text" placeholder="Enter URL" />
-
-	<label for="class">Icon</label>
-	<input id="href" type="text" placeholder="Enter URL" />
-
-	<label for="class">Link Text</label>
-	<input id="href" type="text" placeholder="Enter URL" />
-
-	<label for="href">Link Url</label>
-	<input id="href" type="text" placeholder="Enter URL" />
-
-	<button type="submit">Add Custom Link</button>
-</form>
-<!--
-        Footer:
-        This includes a link to privacy.html page which can be setup for your Privacy Policy.
-        This also includes a link to the LittleLink repository to make forking LittleLink easier.
-        You can edit or remove anything here to make your own footer.
-        -->
-<p>
-	Publish this page to <a href="https://arweave.net" target="_blank" rel="noopener" role="button"
-		>demo_linktree.ar.io</a
-	>.
-</p>
+<hr />
+<div>
+	<div>
+		<label for="custom_text">UnderName</label>
+		<input type="text" id="custom_text" placeholder="Enter you undername" bind:value={underName} />
+		<span title="check availabilty">✅check availabilty</span>
+	</div>
+	<button>Publish this page to {underName}_linktree.ar.io</button>
+</div>
+<hr />
 
 <style>
 	.hidden {
 		display: none;
+	}
+	.form-control {
+		width: 350px;
 	}
 </style>
