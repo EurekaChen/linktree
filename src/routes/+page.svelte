@@ -1,7 +1,10 @@
 <script lang="ts">
 	import preset from './preset.json';
-
 	import { onMount } from 'svelte';
+
+	import { IO } from '@ar.io/sdk/web';
+
+
 
 	let isLogoEditing = $state(false);
 	let isLinkEditing = $state(false);
@@ -58,6 +61,11 @@
 		//const response = await fetch('preset.json'); // 替换为您的JSON文件路径
 		//preset = await response.json();
 		//console.log(preset);
+		// set up client
+		//const io = IO.init();
+		// fetch gateways
+		//const gateways = await io.getGateways();
+		//console.log(gateways);
 	});
 
 	let selectedPreset = $state(preset[0]);
