@@ -2,8 +2,8 @@
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
 	import {IO, ANT } from '@ar.io/sdk/web';
-	//import { getHtml, publish } from '$lib/publish';
-	//import { publish } from '$lib/publish';
+	import { publish } from "../lib/publish"
+	
 
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);

@@ -1,5 +1,5 @@
 // or use @ardrive/turbo-sdk/web depending on your environment
-import { TurboFactory, USD, developmentTurboConfiguration } from '@ardrive/turbo-sdk/node';
+import { TurboFactory, developmentTurboConfiguration } from '@ardrive/turbo-sdk/node';
 import Arweave from 'arweave';
 import { Readable } from 'stream';
 
