@@ -82,6 +82,13 @@ function getHtml() {
 	const gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
 	const linktreeUrl = 'https://linktree' + '.' + gatewayDomainName;
 
+    const storageData = localStorage.getItem('data');
+    if(!storageData) {
+        alert("你还没有填写任何数据");
+        return ""
+    }
+	
+	let data = JSON.parse(storageData);	
 	let result = `<!doctype html>
 <html lang="en">
 <head>
