@@ -2,7 +2,7 @@
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
 	import {IO, ANT } from '@ar.io/sdk/web';
-	import { publish } from "../lib/publish"
+	//import { test } from '$lib/test'
 	
 
 	let isLogoEditing = $state(false);
@@ -68,9 +68,10 @@
 	let iconRoot = $state(defaultIconRoot);
 	onMount(async () => {
 		//获取当前网关域名
-		const hostname = window.location.hostname; // 获取当前主机名
-		const parts = hostname.split('.'); // 按点分割
-		gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
+		//const hostname = window.location.hostname; // 获取当前主机名
+		//const parts = hostname.split('.'); // 按点分割
+		//gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
+		//gatewayDomainName
 
 		const storageData = localStorage.getItem('data');
 		console.log(storageData);
