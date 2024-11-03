@@ -3,7 +3,11 @@
 	import { onMount } from 'svelte';
 	import { IO, ANT } from '@ar.io/sdk/web';
 
-	let gatewayDomainName = $state('ar.io');
+	const hostname = window.location.hostname; // 获取当前主机名
+	const parts = hostname.split('.'); // 按点分割
+	const domainName = parts.slice(-2).join('.'); // 返回最后两部分
+
+	let gatewayDomainName = $state(domainName);
 
 	let isLogoEditing = $state(false);
 	let isLinkEditing = $state(false);
@@ -18,17 +22,19 @@
 
 	let nameChanged = $state(false);
 
-	const iconRoot = 'https://dl.eeurl.com/svg/icon/brand/'; // 'https://linktree.ar.io/images/icons/';
+	const iconRoot =$state('https://dl.eeurl.com/svg/icon/brand/'); // 'https://linktree.ar.io/images/icons/';
+	//const iconRoot=$state('https://linktree.'+gatewayDomainName+'/img/icons/')
+	
 	let data = $state({
 		underName: 'main',
-		title: 'Link Tree AR',
+		title: 'AR Link Tree',
 		logo: 'https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780',
 		description:
 			'You can directly edit this page and permanently publish it to Arweave, then accessing your linktree page through the ArNS',
 		links: [
 			{
 				class: 'default',
-				url: 'https://linktree.ar.io',
+				url: 'https://linktree.'+gatewayDomainName,
 				icon: iconRoot + 'generic-website.svg',
 				text: 'Visit Website'
 			},
@@ -62,9 +68,9 @@
 	const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
 
 	onMount(async () => {
-		const hostname = window.location.hostname; // 获取当前主机名
-		const parts = hostname.split('.'); // 按点分割
-		gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
+		// const hostname = window.location.hostname; // 获取当前主机名
+		// const parts = hostname.split('.'); // 按点分割
+		// gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
 
 		const storageData = localStorage.getItem('data');
 		console.log(storageData);
@@ -90,7 +96,7 @@
 	let addLinkClass = $state(preset[0].buttonClass);
 	let addLinkIcon = $state(iconRoot + preset[0].icon);
 	let addLinkText = $state(preset[0].text);
-	let addLinkUrl = $state('https://' + underName + '_linktree.ar.io');
+	let addLinkUrl = $state('https://' + underName + '_linktree'+gatewayDomainName);
 
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
