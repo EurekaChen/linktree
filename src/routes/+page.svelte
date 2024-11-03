@@ -1,31 +1,27 @@
 <script lang="ts">
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
-	import { IO, ANT } from '@ar.io/sdk/web';
-
-	const hostname = window.location.hostname; // 获取当前主机名
-	const parts = hostname.split('.'); // 按点分割
-	const domainName = parts.slice(-2).join('.'); // 返回最后两部分
-
-	let gatewayDomainName = $state(domainName);
+	import { IO, ANT } from '@ar.io/sdk/web';	
 
 	let isLogoEditing = $state(false);
-	let isLinkEditing = $state(false);
+	let isLinkAdding = $state(false);
 
-	let underName = $state('demo');
+	let underName = $state('demo'); //onmount中改变
 	let nameAvailable = $state(false);
 
 	let showAvialableCheck = $state(false);
 	let showAlphabetOnly = $state(false);
-
 	let isChecking = $state(false);
+	let underNameChanged = $state(false);
 
-	let nameChanged = $state(false);
+	let defaultGatewayDomainName="ar.io";
 
-	const iconRoot =$state('https://dl.eeurl.com/svg/icon/brand/'); // 'https://linktree.ar.io/images/icons/';
-	//const iconRoot=$state('https://linktree.'+gatewayDomainName+'/img/icons/')
+	let defaultRoot='https://linktree'+defaultGatewayDomainName;
 	
-	let data = $state({
+	//let defaultIconRoot= defaultRoot+'/img/icons/';	
+    let defaultIconRoot='https://dl.eeurl.com/svg/icon/brand/'; 
+	
+	let deaultData = {
 		underName: 'main',
 		title: 'AR Link Tree',
 		logo: 'https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780',
@@ -34,80 +30,82 @@
 		links: [
 			{
 				class: 'default',
-				url: 'https://linktree.'+gatewayDomainName,
-				icon: iconRoot + 'generic-website.svg',
+				url: defaultRoot,
+				icon: defaultIconRoot + 'generic-website.svg',
 				text: 'Visit Website'
 			},
 			{
 				class: 'github',
 				url: 'https://github.com/eurekachen',
-				icon: iconRoot + 'github.svg',
+				icon: defaultIconRoot + 'github.svg',
 				text: 'GitHub'
 			},
 			{
 				class: 'pinterest',
 				url: 'https://www.pinterest.com/eureka2093',
-				icon: iconRoot + 'pinterest.svg',
+				icon: defaultIconRoot + 'pinterest.svg',
 				text: 'Pinterest'
 			},
 			{
 				class: 'discord',
 				url: 'https://discord.com',
-				icon: iconRoot + 'discord.svg',
+				icon: defaultIconRoot + 'discord.svg',
 				text: 'Discord'
 			},
 			{
 				class: 'linked',
 				url: 'https://linkedin.com',
-				icon: iconRoot + 'linkedin.svg',
+				icon: defaultIconRoot + 'linkedin.svg',
 				text: 'LinkedIn'
 			}
 		]
-	});
-
-	const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
-
+	};
+	
+    let	gatewayDomainName=$state(defaultGatewayDomainName);
+	let data=$state(deaultData);
+	let iconRoot=$state(defaultIconRoot);
 	onMount(async () => {
-		// const hostname = window.location.hostname; // 获取当前主机名
-		// const parts = hostname.split('.'); // 按点分割
-		// gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
+		//获取当前网关域名
+		const hostname = window.location.hostname; // 获取当前主机名
+		const parts = hostname.split('.'); // 按点分割
+		gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
 
 		const storageData = localStorage.getItem('data');
 		console.log(storageData);
 		if (storageData) {
 			data = JSON.parse(storageData);
+			underName=data.underName;
 		}
-		const io = IO.init();
-		const record = await io.getArNSRecord({ name: 'linktree' });
-		console.log('record:', record);
-
+		// 获取linktree记录信息
+		// const io = IO.init();
+		// const record = await io.getArNSRecord({ name: 'linktree' });
 		//12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
 		//linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
-		const records = await ant.getRecords();
-		//{demo: {…}, @: {…}}
-		//console.log('records:', records);
-		if (data.underName in records) {
+		const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
+		const records = await ant.getRecords();	
+		if (underName in records) {
 			nameAvailable = false;
 		}
 	});
 
 	let selectedPreset = $state(preset[0]);
 	let addLinkClass = $state(preset[0].buttonClass);
-	let addLinkIcon = $state(iconRoot + preset[0].icon);
+	let addLinkIcon = $state(defaultIconRoot + preset[0].icon);
 	let addLinkText = $state(preset[0].text);
-	let addLinkUrl = $state('https://' + underName + '_linktree'+gatewayDomainName);
+	let addLinkUrl = $state(defaultRoot);
 
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
-		console.log('saveed:' + localStorage.getItem('data'));
+		console.log('saved:' + localStorage.getItem('data'));
 	}
 
 	function deleteLink(index: number) {
 		data.links.splice(index, 1);
+		localStorage.setItem('data',JSON.stringify(data));
 	}
 
-	function onchange() {
+	function onSelectChange() {
 		addLinkClass = selectedPreset.buttonClass;
 		addLinkIcon = iconRoot + selectedPreset.icon;
 		addLinkText = selectedPreset.text;
@@ -116,10 +114,11 @@
 	function addLink() {
 		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
 		data.links.push(item);
+		localStorage.setItem('data',JSON.stringify(data));
 	}
 
 	function onUnderNameChanged() {
-		nameChanged = true;
+		underNameChanged = true;
 		isChecking = false;
 		showAvialableCheck = false;
 		showAlphabetOnly = false;
@@ -132,6 +131,7 @@
 		if (valid) {
 			//检查是否可用
 			showAvialableCheck = false;
+			const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
 			const records = await ant.getRecords();
 			if (underName in records) {
 				nameAvailable = false;
@@ -143,7 +143,7 @@
 			showAlphabetOnly = true;
 		}
 		isChecking = false;
-		nameChanged = false;
+		underNameChanged = false;
 	}
 </script>
 
@@ -215,21 +215,21 @@
 
 <hr />
 <button
-	class:hidden={isLinkEditing}
+	class:hidden={isLinkAdding}
 	onclick={() => {
-		isLinkEditing = true;
+		isLinkAdding = true;
 	}}>+ Add Custom Link</button
 >
 <br />
 
 <div
 	style="border:1px solid gray;padding:8px; background-color:#e3f2fd;border-radius:4px"
-	class:hidden={!isLinkEditing}
+	class:hidden={!isLinkAdding}
 >
 	<div style="text-align: right;">
 		<span
 			onclick={() => {
-				isLinkEditing = false;
+				isLinkAdding = false;
 			}}
 		>
 			✖close</span
@@ -238,7 +238,7 @@
 	<br />
 	<div>
 		<label for="class">Preset</label>
-		<select id="class" class="form-control" bind:value={selectedPreset} {onchange}>
+		<select id="class" class="form-control" bind:value={selectedPreset} onchange={onSelectChange}>
 			{#each preset as item}
 				<option value={item}>
 					{item.name}
@@ -303,7 +303,7 @@
 		<span class:hidden={!showAlphabetOnly}>🔤invalid character</span>
 	</div>
 
-	<div class:hidden={nameChanged || showAlphabetOnly}>
+	<div class:hidden={underNameChanged || showAlphabetOnly}>
 		<div class:hidden={nameAvailable}>
 			<strong>{underName} is ready!</strong> vist {underName}_{gatewayDomainName} or
 			<a href="...">more domain names</a>

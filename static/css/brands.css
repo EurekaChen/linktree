@@ -1,34 +1,4 @@
-/*
-* littlelink.io
-* Skeleton V2.0.4
-* Copyright 2014, Dave Gamache
-* www.getskeleton.com
-* Free to use under the MIT license.
-* http://www.opensource.org/licenses/mit-license.php
-* 12/29/2014
-*/
-
-/*
-* Built using on:
-* Skeleton V2.0.4
-* Copyright 2014, Dave Gamache
-* www.getskeleton.com
-* Free to use under the MIT license.
-* http://www.opensource.org/licenses/mit-license.php
-* 12/29/2014
-*/
-
-/* Table of contents
-––––––––––––––––––––––––––––––––––––––––––––––––––
-
-- Buttons
-- Brand Styles
-
-*/
-
-/* Buttons
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
-
+/* linktree.ar.io */
 .button {
   display: inline-block;
   text-decoration: none;
@@ -76,10 +46,10 @@
 /* Brand Styles
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-/* Default (this is great for your own brand color!) */
+/* Default (Eureka Color) */
 .button.button-default {
   color: #ffffff;
-  background-color: #2457F5;
+  background-color: #2196f3;
 }
 .button.button-default:hover,
 .button.button-default:focus {
