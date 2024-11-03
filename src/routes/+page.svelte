@@ -1,7 +1,8 @@
 <script lang="ts">
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
-	import { IO, ANT } from '@ar.io/sdk/web';	
+	import { IO, ANT } from '@ar.io/sdk/web';
+	import { publish } from '$lib/publish';
 
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
@@ -14,13 +15,13 @@
 	let isChecking = $state(false);
 	let underNameChanged = $state(false);
 
-	let defaultGatewayDomainName="ar.io";
+	let defaultGatewayDomainName = 'ar.io';
 
-	let defaultRoot='https://linktree'+defaultGatewayDomainName;
-	
-	//let defaultIconRoot= defaultRoot+'/img/icon/';	
-    let defaultIconRoot='https://dl.eeurl.com/svg/icon/brand/'; 
-	
+	let defaultRoot = 'https://linktree' + defaultGatewayDomainName;
+
+	//let defaultIconRoot= defaultRoot+'/img/icon/';
+	let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
+
 	let deaultData = {
 		underName: 'main',
 		title: 'AR Link Tree',
@@ -60,10 +61,10 @@
 			}
 		]
 	};
-	
-    let	gatewayDomainName=$state(defaultGatewayDomainName);
-	let data=$state(deaultData);
-	let iconRoot=$state(defaultIconRoot);
+
+	let gatewayDomainName = $state(defaultGatewayDomainName);
+	let data = $state(deaultData);
+	let iconRoot = $state(defaultIconRoot);
 	onMount(async () => {
 		//获取当前网关域名
 		const hostname = window.location.hostname; // 获取当前主机名
@@ -74,7 +75,7 @@
 		console.log(storageData);
 		if (storageData) {
 			data = JSON.parse(storageData);
-			underName=data.underName;
+			underName = data.underName;
 		}
 		// 获取linktree记录信息
 		// const io = IO.init();
@@ -83,7 +84,7 @@
 		//linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
 		const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
-		const records = await ant.getRecords();	
+		const records = await ant.getRecords();
 		if (underName in records) {
 			nameAvailable = false;
 		}
@@ -102,7 +103,7 @@
 
 	function deleteLink(index: number) {
 		data.links.splice(index, 1);
-		localStorage.setItem('data',JSON.stringify(data));
+		localStorage.setItem('data', JSON.stringify(data));
 	}
 
 	function onSelectChange() {
@@ -114,7 +115,7 @@
 	function addLink() {
 		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
 		data.links.push(item);
-		localStorage.setItem('data',JSON.stringify(data));
+		localStorage.setItem('data', JSON.stringify(data));
 	}
 
 	function onUnderNameChanged() {
@@ -144,6 +145,11 @@
 		}
 		isChecking = false;
 		underNameChanged = false;
+	}
+
+	let publishResult = $state(publish());
+	async function publishIt() {
+		publishResult = publish();
 	}
 </script>
 
@@ -308,9 +314,21 @@
 			<strong>{underName} is ready!</strong> vist {underName}_{gatewayDomainName} or
 			<a href="...">more domain names</a>
 		</div>
-		<button class:hidden={!nameAvailable} disabled={!nameAvailable}
+		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publishIt}
 			>Publish this page to {underName}_{gatewayDomainName}</button
 		>
+		<div>
+			<p>Upload your linktree to Arweave...</p>
+			<p>you linktree upload sucessful, ID：</p>
+			<p>sign undername for you, this will take time, waiting</p>
+			{#await publishResult}
+				<p>...rolling</p>
+			{:then result}
+				<p>get Result: {result}!</p>
+			{:catch error}
+				<p style="color: red">{error.message}</p>
+			{/await}
+		</div>
 	</div>
 </div>
 <hr />
