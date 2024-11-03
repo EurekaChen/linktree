@@ -1,15 +1,22 @@
 <script lang="ts">
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
+	import { IO, ANT } from '@ar.io/sdk/web';
 
-	import { IO } from '@ar.io/sdk/web';
-
-
+	let gatewayDomainName = $state('ar.io');
 
 	let isLogoEditing = $state(false);
 	let isLinkEditing = $state(false);
 
 	let underName = $state('demo');
+	let nameAvailable = $state(false);
+
+	let showAvialableCheck = $state(false);
+	let showAlphabetOnly = $state(false);
+
+	let isChecking = $state(false);
+
+	let nameChanged = $state(false);
 
 	const iconRoot = 'https://dl.eeurl.com/svg/icon/brand/'; // 'https://linktree.ar.io/images/icons/';
 	let data = $state({
@@ -52,27 +59,38 @@
 		]
 	});
 
+	const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
+
 	onMount(async () => {
+		const hostname = window.location.hostname; // 获取当前主机名
+		const parts = hostname.split('.'); // 按点分割
+		gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
+
 		const storageData = localStorage.getItem('data');
 		console.log(storageData);
 		if (storageData) {
 			data = JSON.parse(storageData);
 		}
-		//const response = await fetch('preset.json'); // 替换为您的JSON文件路径
-		//preset = await response.json();
-		//console.log(preset);
-		// set up client
-		//const io = IO.init();
-		// fetch gateways
-		//const gateways = await io.getGateways();
-		//console.log(gateways);
+		const io = IO.init();
+		const record = await io.getArNSRecord({ name: 'linktree' });
+		console.log('record:', record);
+
+		//12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
+		//linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
+
+		const records = await ant.getRecords();
+		//{demo: {…}, @: {…}}
+		//console.log('records:', records);
+		if (data.underName in records) {
+			nameAvailable = false;
+		}
 	});
 
 	let selectedPreset = $state(preset[0]);
 	let addLinkClass = $state(preset[0].buttonClass);
 	let addLinkIcon = $state(iconRoot + preset[0].icon);
 	let addLinkText = $state(preset[0].text);
-	let addLinkUrl = $state('https://'+underName+'_linktree.ar.io');
+	let addLinkUrl = $state('https://' + underName + '_linktree.ar.io');
 
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
@@ -85,13 +103,41 @@
 
 	function onchange() {
 		addLinkClass = selectedPreset.buttonClass;
-		addLinkIcon = iconRoot+ selectedPreset.icon;
+		addLinkIcon = iconRoot + selectedPreset.icon;
 		addLinkText = selectedPreset.text;
 	}
 
 	function addLink() {
 		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
 		data.links.push(item);
+	}
+
+	function onUnderNameChanged() {
+		nameChanged = true;
+		isChecking = false;
+		showAvialableCheck = false;
+		showAlphabetOnly = false;
+	}
+
+	async function checkName() {
+		isChecking = true;
+		const regex = /^[a-z0-9-]+$/; // 允许字母和连字符
+		let valid = regex.test(underName);
+		if (valid) {
+			//检查是否可用
+			showAvialableCheck = false;
+			const records = await ant.getRecords();
+			if (underName in records) {
+				nameAvailable = false;
+			} else {
+				nameAvailable = true;
+			}
+			showAvialableCheck = true;
+		} else {
+			showAlphabetOnly = true;
+		}
+		isChecking = false;
+		nameChanged = false;
 	}
 </script>
 
@@ -186,7 +232,7 @@
 	<br />
 	<div>
 		<label for="class">Preset</label>
-		<select id="class" class="form-control" bind:value={selectedPreset} onchange={onchange}>
+		<select id="class" class="form-control" bind:value={selectedPreset} {onchange}>
 			{#each preset as item}
 				<option value={item}>
 					{item.name}
@@ -218,8 +264,12 @@
 		<input class="form-control" type="text" placeholder="Enter Your Link URL" value={addLinkUrl} />
 	</div>
 
-	<a class="button button-{addLinkClass}" href={addLinkUrl} target="_blank" rel="noopener" role="button"
-		><img class="icon" aria-hidden="true" src="{addLinkIcon}" alt="" />{addLinkText}</a
+	<a
+		class="button button-{addLinkClass}"
+		href={addLinkUrl}
+		target="_blank"
+		rel="noopener"
+		role="button"><img class="icon" aria-hidden="true" src={addLinkIcon} alt="" />{addLinkText}</a
 	>
 	<br />
 	<button type="submit" onclick={addLink}>Add Link</button>
@@ -230,10 +280,32 @@
 <div>
 	<div>
 		<label for="custom_text">UnderName</label>
-		<input type="text" id="custom_text" placeholder="Enter you undername" bind:value={underName} />
-		<span title="check availabilty">✅check availabilty</span>
+		<input
+			type="text"
+			style="width: 100px;"
+			id="custom_text"
+			placeholder="Enter you undername"
+			bind:value={underName}
+			onkeydown={onUnderNameChanged}
+		/>
+		<button onclick={checkName}>Valid Check</button>
+		<span class:hidden={!isChecking}>🛑checking</span>
+		<span class:hidden={!showAvialableCheck}>
+			<span class:hidden={!nameAvailable}>✔available</span>
+			<span class:hidden={nameAvailable}>✖taken</span>
+		</span>
+		<span class:hidden={!showAlphabetOnly}>🔤invalid character</span>
 	</div>
-	<button>Publish this page to {underName}_linktree.ar.io</button>
+
+	<div class:hidden={nameChanged || showAlphabetOnly}>
+		<div class:hidden={nameAvailable}>
+			<strong>{underName} is ready!</strong> vist {underName}_{gatewayDomainName} or
+			<a href="...">more domain names</a>
+		</div>
+		<button class:hidden={!nameAvailable} disabled={!nameAvailable}
+			>Publish this page to {underName}_{gatewayDomainName}</button
+		>
+	</div>
 </div>
 <hr />
 
