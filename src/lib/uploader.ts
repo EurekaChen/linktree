@@ -8,24 +8,8 @@ export async function publish() {
 	const arweave = new Arweave({});
 	const jwk = await arweave.wallets.generate();	
 	const turboAuthClient = TurboFactory.authenticated({privateKey: jwk,...developmentTurboConfiguration});	
-	
-    //const balance = await turboAuthClient.getBalance();
-	//console.log('Balance:', balance);
 
-	/**
-	 * Fetch the estimated amount of winc returned for 10 USD (1000 cents).
-	 * 获取法币10USD返回和winc数量
-	 */
-	// const estimatedWinc = await turboAuthClient.getWincForFiat({
-	// 	amount: USD(10)
-	// });
-	// console.log('10 USD to winc:', estimatedWinc);
-
-	/**
-	 * Post local files to the Turbo service.
-	 * 将本地文件放到Turbo服务
-	 */
-	console.log('Posting raw file to Turbo service...');
+	console.log('将linktree html文件发布到Turbo服务中...');
 
 	const fileContent = getHtml();
 	//const fileSize = fs.statSync(filePath).size;
@@ -35,21 +19,21 @@ export async function publish() {
 			const readable = new Readable();
 			readable._read = () => {}; // _read is required but you can noop it
 			readable.push(fileContent);
-			readable.push(null); // indicates end of file
+			readable.push(null); // 表示文件结束
 			return readable;
 		},
 		fileSizeFactory: () => fileSize,
         dataItemOpts: {
-			// optional
+			// 加入Content-Type以便直接显示而不下载
 			tags: [
 				{
 					name: 'Content-Type',
 					value: 'text/html'
 				}
 			]
-			// no timeout or AbortSignal provided
+			// 没有提供超时或退出信息
 		},
-		signal: AbortSignal.timeout(10_000) // cancel the upload after 10 seconds
+		signal: AbortSignal.timeout(10_000) // 10秒后取消上传
 	});
 
     console.log("返回结果：", uploadResult);
