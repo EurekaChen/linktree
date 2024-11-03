@@ -110,7 +110,7 @@ function getHtml() {
                     ><img
                         class="icon"
                         aria-hidden="true"
-                        src="images/icons/generic-website.svg"
+                        src="images/icon/generic-website.svg"
                         alt="website"
                     />Website</a
                 ><br />
@@ -118,19 +118,19 @@ function getHtml() {
                     ><img
                         class="icon"
                         aria-hidden="true"
-                        src="images/icons/github.svg"
+                        src="images/icon/github.svg"
                         alt="GitHub Logo"
                     />GitHub</a
                 ><br />
                 <a class="button button-x" href="#" target="_blank" rel="noopener" role="button"
-                    ><img class="icon" aria-hidden="true" src="images/icons/x.svg" alt="X Logo" />Follow on
+                    ><img class="icon" aria-hidden="true" src="images/icon/x.svg" alt="X Logo" />Follow on
                     X</a
                 ><br />
                 <a class="button button-yt" href="#" target="_blank" rel="noopener" role="button"
                     ><img
                         class="icon"
                         aria-hidden="true"
-                        src="images/icons/youtube.svg"
+                        src="images/icon/youtube.svg"
                         alt="YouTube Logo"
                     />YouTube</a
                 ><br />

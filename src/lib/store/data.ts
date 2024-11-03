@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-const iconRoot = 'https://linktree.ar.io/images/icons/';
+const iconRoot = 'https://linktree.ar.io/img/icon/';
 
 const initialData = {
 	underName: 'main',

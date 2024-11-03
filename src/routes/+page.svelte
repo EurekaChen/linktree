@@ -18,7 +18,7 @@
 
 	let defaultRoot='https://linktree'+defaultGatewayDomainName;
 	
-	//let defaultIconRoot= defaultRoot+'/img/icons/';	
+	//let defaultIconRoot= defaultRoot+'/img/icon/';	
     let defaultIconRoot='https://dl.eeurl.com/svg/icon/brand/'; 
 	
 	let deaultData = {
