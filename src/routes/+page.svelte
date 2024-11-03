@@ -2,7 +2,7 @@
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
 	import {IO, ANT } from '@ar.io/sdk/web';
-	//import { test } from '$lib/test'
+	//import { publish } from '$lib/publish'
 	
 
 	let isLogoEditing = $state(false);
