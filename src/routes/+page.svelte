@@ -1,8 +1,9 @@
 <script lang="ts">
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
-	import { IO, ANT } from '@ar.io/sdk/web';
-	import { publish } from '$lib/publish';
+	import {IO, ANT } from '@ar.io/sdk/web';
+	//import { getHtml, publish } from '$lib/publish';
+	//import { publish } from '$lib/publish';
 
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
@@ -147,10 +148,11 @@
 		underNameChanged = false;
 	}
 
-	let publishResult = $state(publish());
-	async function publishIt() {
-		publishResult = publish();
-	}
+	 //let publishResult = $state(publish());
+	 async function publishIt() {
+	 	//publishResult = publish();
+		//getHtml();
+	 }
 </script>
 
 <!-- Your Image Here -->
@@ -314,20 +316,20 @@
 			<strong>{underName} is ready!</strong> vist {underName}_{gatewayDomainName} or
 			<a href="...">more domain names</a>
 		</div>
-		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publishIt}
+		<button class:hidden={!nameAvailable} disabled={!nameAvailable} 
 			>Publish this page to {underName}_{gatewayDomainName}</button
 		>
 		<div>
 			<p>Upload your linktree to Arweave...</p>
 			<p>you linktree upload sucessful, ID：</p>
 			<p>sign undername for you, this will take time, waiting</p>
-			{#await publishResult}
+			<!-- {#await publishResult}
 				<p>...rolling</p>
 			{:then result}
 				<p>get Result: {result}!</p>
 			{:catch error}
 				<p style="color: red">{error.message}</p>
-			{/await}
+			{/await} -->
 		</div>
 	</div>
 </div>
