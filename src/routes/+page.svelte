@@ -18,7 +18,7 @@
 	let undername = $state('demo'); //onmount中改变
 	let linktreeId = $state('');
 	let nameAvailable = $state(false);
-	let antWarning=$state(true);
+	let antWarning = $state(true);
 
 	let showAvialableCheck = $state(false);
 	let showAlphabetOnly = $state(false);
@@ -29,12 +29,11 @@
 
 	let defaultRoot = 'https://linktree' + defaultGatewayDomainName;
 
-	//let defaultIconRoot= defaultRoot+'/img/icon/';
-	let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
+	let defaultIconRoot = defaultRoot + '/img/icon/';
+	//let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
 
 	//默认数据，没有保存时使用
 	let deaultData = {
-		underName: 'main',
 		title: 'AR Link Tree',
 		logo: 'https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780',
 		description:
@@ -111,14 +110,13 @@
 				const records = await ant.getRecords();
 				if (undername in records) {
 					nameAvailable = false;
+				} else {
+					nameAvailable = true;
 				}
-				else{
-					nameAvailable=true;
-				}
-				antWarning=false;
+				antWarning = false;
 			} catch (error) {
-				console.error('导入失败:', error);
-				antWarning=true;
+				console.error('导入失败ANT:', error);
+				antWarning = true;
 			}
 		})();
 	});
@@ -199,13 +197,7 @@
 	}
 </script>
 
-<!-- Your Image Here -->
-<img
-	src="https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780"
-	class="avatar"
-	srcset="https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780 2x"
-	alt="linktree AR"
-/>
+<img src={data.logo} class="avatar" srcset="{data.logo} 2x" alt={data.title} />
 
 <span
 	title="editlogo"
@@ -347,13 +339,16 @@
 	<br />
 </div>
 <hr />
-<button title="Modify this page to active this button" onclick={turboUpload}
+<button disabled={!uploadEnabled} title="Modify this page to active this button" onclick={turboUpload}
 	>Upload this linktree page to Arweave</button
 >
-<p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>Upload your linktree to Arweave...</p>
-<p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>Link Tree ID:{linktreeId}</p>
+<p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>
+	Upload your linktree to Arweave...
+</p>
+<p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
+	Link Tree ID:{linktreeId}
+</p>
 <hr />
-
 
 <div class:hidden={antWarning}>
 	<div>
@@ -369,16 +364,30 @@
 		<button onclick={checkName}>Valid Check</button>
 		<span style="font-size:12px;color:coral" class:hidden={!isChecking}> 🛑 checking</span>
 		<span style="font-size:12px" class:hidden={!showAvialableCheck}>
-			<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}> ✔ {undername} is available</span>
-			<span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}> ✖ {undername} is taken</span>
+			<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
+				✔ {undername} is available</span
+			>
+			<span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
+				✖ {undername} is taken</span
+			>
 		</span>
 		<span class:hidden={!showAlphabetOnly}>⚠invalid character</span>
 	</div>
 
 	<div class:hidden={underNameChanged || showAlphabetOnly}>
 		<div class:hidden={nameAvailable}>
-			<strong style="color:green">{undername} is ready! </strong> vist <code> <a style="text-decoration: none;" href="https://{undername}_{gatewayDomainName}">https://{undername}_{gatewayDomainName}</a></code> or
-		<code><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a></code>
+			<strong style="color:green">{undername} is ready! </strong> vist
+			<code>
+				<a style="text-decoration: none;" href="https://{undername}_{gatewayDomainName}"
+					>https://{undername}_{gatewayDomainName}</a
+				></code
+			>
+			or
+			<code
+				><a style="text-decoration: none;" href="/gateway?undername={undername}"
+					>more domain names</a
+				></code
+			>
 		</div>
 		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publish}
 			>Publish to {undername}_{gatewayDomainName}</button
@@ -386,7 +395,7 @@
 	</div>
 </div>
 <div style="color:orangered" class:hidden={!antWarning}>
- Warning: ANT service is unvailable now, refresh or try it later.
+	Warning: ANT service is unvailable now, refresh or try it later.
 </div>
 <hr />
 
