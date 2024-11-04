@@ -13,9 +13,9 @@ export default defineConfig({
 		'process.env': {}
 	},
 
-	resolve: {
-		alias: {
-			stream: 'stream-browserify'
-		}
-	}
+	// resolve: {
+	// 	alias: {
+	// 		stream: 'stream-browserify'
+	// 	}
+	// }
 });
