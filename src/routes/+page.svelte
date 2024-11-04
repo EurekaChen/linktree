@@ -18,7 +18,7 @@
 	let uploadEnabled = $state(false);
 
 	let undername = $state('demo'); //onmount中改变
-	let linktreeId = $state('');
+	let linktreeId = $state('4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y'); //demo
 	let nameAvailable = $state(false);
 	let antWarning = $state(true);
 
@@ -203,9 +203,8 @@
 			showLinktreeId = true;
 		}
 	}
-	async function publish() {
-		//先上传
-		//再发到AO
+	async function publish() {		
+		//发到AO进行发布
 
 		showPublish = true;
 		const undernameProcessId = 'GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E';
