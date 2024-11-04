@@ -1,19 +1,21 @@
 // import { TurboFactory, developmentTurboConfiguration } from '@ardrive/turbo-sdk/web';
 // import Arweave from 'arweave';
 // import { Readable } from 'stream';
- import { prepare } from './prepare';
+import { prepare } from './prepare';
 
-export async function upload() {	
-
-	const fileContent =prepare();
-
+export async function upload() {
+	const fileContent = prepare();
 	console.log(fileContent);
-	return "-k7t8xMoB8hW482609Z9F4bTFMC3MnuW8bTvTyT8pFI";
+	//demo_linktree.io:4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
+	return '4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y';
 	const arweave = new Arweave({});
-	const jwk = await arweave.wallets.generate();	
-	const turboAuthClient = TurboFactory.authenticated({privateKey: jwk,...developmentTurboConfiguration});	
+	const jwk = await arweave.wallets.generate();
+	const turboAuthClient = TurboFactory.authenticated({
+		privateKey: jwk,
+		...developmentTurboConfiguration
+	});
 	const fileSize = Buffer.byteLength(fileContent, 'utf-8');
-	
+
 	console.log('将linktree html文件发布到Turbo服务中...');
 	const uploadResult = await turboAuthClient.uploadFile({
 		fileStreamFactory: () => {
@@ -24,7 +26,7 @@ export async function upload() {
 			return readable;
 		},
 		fileSizeFactory: () => fileSize,
-        dataItemOpts: {
+		dataItemOpts: {
 			// 加入Content-Type以便直接显示而不下载
 			tags: [
 				{
@@ -37,7 +39,6 @@ export async function upload() {
 		signal: AbortSignal.timeout(10_000) // 10秒后取消上传
 	});
 
-    console.log("返回结果：", uploadResult);
+	console.log('返回结果：', uploadResult);
 	console.log(JSON.stringify(uploadResult, null, 2));
-
 }

@@ -6,6 +6,7 @@
 
 	import { upload } from '$lib/upload';
 	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
+	import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
@@ -24,6 +25,10 @@
 	let showAlphabetOnly = $state(false);
 	let isChecking = $state(false);
 	let underNameChanged = $state(false);
+
+	let showPublish = $state(false);
+	let showSuccess = $state(false);
+	let showFail = $state(false);
 
 	let defaultGatewayDomainName = 'ar.io';
 
@@ -194,6 +199,28 @@
 	async function publish() {
 		//先上传
 		//再发到AO
+
+		showPublish = true;
+		const undernameProcessId = 'GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E';
+		const msgId = await message({
+			process: undernameProcessId,
+			tags: [
+				{ name: 'Action', value: 'Add' },
+				{ name: 'Undername', value: undername },
+				{ name: 'Target', value: linktreeId }
+			],
+			signer: createDataItemSigner(window.arweaveWallet),
+			data: 'linktree'
+		});
+		console.log('toAoMsgId:', msgId);
+
+		const readResult = await result({ message: msgId, process: undernameProcessId });
+		let reply = readResult.Messages[0].Data;
+		if (reply == 'success') {
+			showSuccess = true;
+		} else {
+			showFail = true;
+		}
 	}
 </script>
 
@@ -249,7 +276,7 @@
 	></h1>
 </div>
 <!--Description-->
-<p contenteditable="true" bind:innerHTML={data.description} onblur={save}></p>
+<p contenteditable="true" bind:textContent={data.description} onblur={save}></p>
 
 {#each data.links as link, index}
 	<a class="button button-{link.class}" href={link.url} target="_blank" rel="noopener" role="button"
@@ -339,8 +366,10 @@
 	<br />
 </div>
 <hr />
-<button disabled={!uploadEnabled} title="Modify this page to active this button" onclick={turboUpload}
-	>Upload this linktree page to Arweave</button
+<button
+	disabled={!uploadEnabled}
+	title="Modify this page to active this button"
+	onclick={turboUpload}>Upload this linktree page to Arweave</button
 >
 <p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>
 	Upload your linktree to Arweave...
@@ -371,7 +400,9 @@
 				✖ {undername} is taken</span
 			>
 		</span>
-		<span class:hidden={!showAlphabetOnly}>⚠invalid character</span>
+		<span style="font-size:12px;color:darkred" class:hidden={!showAlphabetOnly}
+			>⚠invalid character</span
+		>
 	</div>
 
 	<div class:hidden={underNameChanged || showAlphabetOnly}>
@@ -392,6 +423,21 @@
 		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publish}
 			>Publish to {undername}_linktree.{gatewayDomainName}</button
 		>
+		<div class:hidden={!showPublish}>
+			<p>
+				<!--正在发往AO处理域名解析事项...-->
+				Sending to AO to handle undername resolution...
+			</p>
+			<p class:hidden={!showFail}>
+				<!--AO处理过程中遇到问题，请稍候再试-->
+				We encountered an issue during the AO processing. Please try again later.
+			</p>
+			<p class:hidden={!showSuccess}>
+				<!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
+				It will take some time to resolve the undername until it takes effect. Please visit your linktree
+				or check the results on this page later.
+			</p>
+		</div>
 	</div>
 </div>
 <div style="color:orangered" class:hidden={!antWarning}>
