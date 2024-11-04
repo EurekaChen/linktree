@@ -13,6 +13,7 @@
 
 	let isUploading = $state(false);
 	let showLinktreeId = $state(false);
+	let uploadFailed = $state(false);
 
 	let uploadEnabled = $state(false);
 
@@ -193,8 +194,14 @@
 		isUploading = true;
 		showLinktreeId = false;
 		linktreeId = await upload();
-		isUploading = false;
-		showLinktreeId = true;
+		if (linktreeId == 'failed') {
+			isUploading=false;
+			uploadFailed = true;
+			showLinktreeId = false;
+		} else {
+			isUploading = false;
+			showLinktreeId = true;
+		}
 	}
 	async function publish() {
 		//先上传
@@ -376,6 +383,9 @@
 </p>
 <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
 	Link Tree ID:{linktreeId}
+</p>
+<p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
+	Upload to Arweave Failed, try it layter.
 </p>
 <hr />
 
