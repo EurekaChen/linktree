@@ -2,13 +2,17 @@
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
 	//严重怀疑这个库问题导至刷新出错！！或者跟网络也有关系！
-	import { ANT } from '@ar.io/sdk/web';
+	//import { ANT } from '@ar.io/sdk/web';
 
-	//import { publish } from '$lib/publish'
+	import { upload } from '$lib/upload';
+	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
 
+	let uploadEnabled = $state(false);
+
 	let underName = $state('demo'); //onmount中改变
+	let linktreeId = $state('');
 	let nameAvailable = $state(false);
 
 	let showAvialableCheck = $state(false);
@@ -67,11 +71,8 @@
 	let data = $state(deaultData);
 	let iconRoot = $state(defaultIconRoot);
 	onMount(async () => {
-		//获取当前网关域名
-		//const hostname = window.location.hostname; // 获取当前主机名
-		//const parts = hostname.split('.'); // 按点分割
-		//gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
-		//gatewayDomainName
+		//获取当前网关域名		
+		gatewayDomainName = getGatewayDomainName();
 
 		const storageData = localStorage.getItem('data');
 		console.log('获取到本地内存缓存数据', storageData);
@@ -79,12 +80,25 @@
 			data = JSON.parse(storageData);
 			underName = data.underName;
 		}
+
+		let getlinktreeId = localStorage.getItem('linktreeId');
+		if (getlinktreeId) {
+			linktreeId = getlinktreeId;
+		}
 		// 获取linktree记录信息
-		// const io = IO.init();
-		// const record = await io.getArNSRecord({ name: 'linktree' });
+		//const io = IO.init();
+		//const record = await io.getArNSRecord({ name: 'linktree' });
 		//12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
 		//linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
+		// import('@ar.io/sdk/web').then(module => {
+		//     const ANT = module.ANT;
+		//     // 使用 ANT
+		// }).catch(error => {
+		//     console.error('导入失败:', error);
+		// });
+
+		// const { ANT } = await import('@ar.io/sdk/web');
 		// const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
 		// const records = await ant.getRecords();
 		// if (underName in records) {
@@ -100,12 +114,15 @@
 
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
+		uploadEnabled = true;
 		console.log('saved:' + localStorage.getItem('data'));
 	}
 
 	function deleteLink(index: number) {
 		data.links.splice(index, 1);
+
 		localStorage.setItem('data', JSON.stringify(data));
+		uploadEnabled = true;
 	}
 
 	function onSelectChange() {
@@ -118,6 +135,7 @@
 		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
 		data.links.push(item);
 		localStorage.setItem('data', JSON.stringify(data));
+		uploadEnabled = true;
 	}
 
 	function onUnderNameChanged() {
@@ -134,6 +152,7 @@
 		if (valid) {
 			//检查是否可用
 			showAvialableCheck = false;
+			const { ANT } = await import('@ar.io/sdk/web');
 			const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
 			const records = await ant.getRecords();
 			if (underName in records) {
@@ -290,6 +309,23 @@
 	<button type="submit" onclick={addLink}>Add Link</button>
 	<br />
 </div>
+<hr />
+<button title="Modify this page to active this button" onclick={upload}
+	>Upload this linktree page to Arweave</button
+>
+<div>Link Tree ID:{linktreeId}</div>
+<div>
+	<p>Upload your linktree to Arweave...</p>
+	<p>you linktree upload sucessful, ID：</p>
+	<p>sign undername for you, this will take time, waiting</p>
+	<!-- {#await publishResult}
+		<p>...rolling</p>
+	{:then result}
+		<p>get Result: {result}!</p>
+	{:catch error}
+		<p style="color: red">{error.message}</p>
+	{/await} -->
+</div>
 
 <hr />
 <div>
@@ -320,19 +356,6 @@
 		<button class:hidden={!nameAvailable} disabled={!nameAvailable}
 			>Publish this page to {underName}_{gatewayDomainName}</button
 		>
-		<button onclick={() => publish()}>试发布</button>
-		<div>
-			<p>Upload your linktree to Arweave...</p>
-			<p>you linktree upload sucessful, ID：</p>
-			<p>sign undername for you, this will take time, waiting</p>
-			<!-- {#await publishResult}
-				<p>...rolling</p>
-			{:then result}
-				<p>get Result: {result}!</p>
-			{:catch error}
-				<p style="color: red">{error.message}</p>
-			{/await} -->
-		</div>
 	</div>
 </div>
 <hr />

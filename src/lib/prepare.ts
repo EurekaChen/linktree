@@ -1,9 +1,8 @@
+import { getGatewayDomainName } from './getGatewayDomainName';
 
-export function prepareHtml() {
-	const hostname = window.location.hostname; // 获取当前主机名
-	const parts = hostname.split('.'); // 按点分割
-	const gatewayDomainName = parts.slice(-2).join('.'); // 返回最后两部分
-	const linktreeUrl = 'https://linktree' + '.' + gatewayDomainName;
+export function prepare() {
+	const gatewayDomainName = getGatewayDomainName;
+	const linktreeUrl = 'https://linktree' + '.' + gatewayDomainName();
 
 	const storageData = localStorage.getItem('data');
 	if (!storageData) {
@@ -12,7 +11,7 @@ export function prepareHtml() {
 	}
 
 	const data = JSON.parse(storageData);
-	console.log("data",data);
+	console.log('data', data);
 
 	let result = `<!doctype html>
 <html lang="en">
@@ -49,27 +48,29 @@ export function prepareHtml() {
 	result += data.description;
 	result += `</p>`;
 
-	// for (const link in data.links) {
-	// 	result += `<a class="button button-`;
-	// 	result += link.buttonClass;
-	// 	result += `" href="`;
-	// 	result += link.url;
-	// 	result += `" target="_blank" rel="noopener" role="button"
-    //     ><img
-    //         class="icon"
-    //         aria-hidden="true"
-    //         src="`;
-	// 	result += link.src;
-	// 	result += `"
-    //         alt="`;
-	// 	result += link.text;
-	// 	result += `"
-    //     />`;
-	// 	result += `</a
-    // >
-    // <br />
-    // `;
-	// }
+	console.log('links', data.links);
+	for (const link of data.links) {
+		result += `<a class="button button-`;
+		result += link.class;
+		result += `" href="`;
+		result += link.url;
+		result += `" target="_blank" rel="noopener" role="button"
+        ><img
+            class="icon"
+            aria-hidden="true"
+            src="`;
+		result += link.icon;
+		result += `"
+            alt="`;
+		result += link.text;
+		result += `"
+        />`;
+		result += link.text;
+		result += `</a
+    >
+    <br />
+    `;
+	}
 
 	result += `      
             </div>
