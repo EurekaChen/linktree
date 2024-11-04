@@ -378,8 +378,8 @@
 		<div class:hidden={nameAvailable}>
 			<strong style="color:green">{undername} is ready! </strong> vist
 			<code>
-				<a style="text-decoration: none;" href="https://{undername}_{gatewayDomainName}"
-					>https://{undername}_{gatewayDomainName}</a
+				<a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"
+					>https://{undername}_linktree.{gatewayDomainName}</a
 				></code
 			>
 			or
@@ -390,7 +390,7 @@
 			>
 		</div>
 		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publish}
-			>Publish to {undername}_{gatewayDomainName}</button
+			>Publish to {undername}_linktree.{gatewayDomainName}</button
 		>
 	</div>
 </div>
