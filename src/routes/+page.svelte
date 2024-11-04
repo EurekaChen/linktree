@@ -1,19 +1,24 @@
 <script lang="ts">
 	import preset from './preset.json';
 	import { onMount } from 'svelte';
-	//严重怀疑这个库问题导至刷新出错！！或者跟网络也有关系！
+	//严重怀疑这个库问题导至刷新出错！！或者跟网络也有关系！一开始暂不导入
 	//import { ANT } from '@ar.io/sdk/web';
 
 	import { upload } from '$lib/upload';
 	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
+
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
 
+	let isUploading = $state(false);
+	let showLinktreeId = $state(false);
+
 	let uploadEnabled = $state(false);
 
-	let underName = $state('demo'); //onmount中改变
+	let undername = $state('demo'); //onmount中改变
 	let linktreeId = $state('');
 	let nameAvailable = $state(false);
+	let antWarning=$state(true);
 
 	let showAvialableCheck = $state(false);
 	let showAlphabetOnly = $state(false);
@@ -27,6 +32,7 @@
 	//let defaultIconRoot= defaultRoot+'/img/icon/';
 	let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
 
+	//默认数据，没有保存时使用
 	let deaultData = {
 		underName: 'main',
 		title: 'AR Link Tree',
@@ -71,14 +77,20 @@
 	let data = $state(deaultData);
 	let iconRoot = $state(defaultIconRoot);
 	onMount(async () => {
-		//获取当前网关域名		
+		//获取当前网关域名
 		gatewayDomainName = getGatewayDomainName();
 
+		//获取之前保存的数据
 		const storageData = localStorage.getItem('data');
 		console.log('获取到本地内存缓存数据', storageData);
 		if (storageData) {
 			data = JSON.parse(storageData);
-			underName = data.underName;
+		}
+
+		//获取之前设置的undername
+		const storageUndername = localStorage.getItem('undername');
+		if (storageUndername) {
+			undername = storageUndername;
 		}
 
 		let getlinktreeId = localStorage.getItem('linktreeId');
@@ -91,19 +103,24 @@
 		//12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
 		//linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
-		// import('@ar.io/sdk/web').then(module => {
-		//     const ANT = module.ANT;
-		//     // 使用 ANT
-		// }).catch(error => {
-		//     console.error('导入失败:', error);
-		// });
-
-		// const { ANT } = await import('@ar.io/sdk/web');
-		// const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
-		// const records = await ant.getRecords();
-		// if (underName in records) {
-		// 	nameAvailable = false;
-		// }
+		(async () => {
+			try {
+				const module = await import('@ar.io/sdk/web');
+				const ANT = module.ANT;
+				const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
+				const records = await ant.getRecords();
+				if (undername in records) {
+					nameAvailable = false;
+				}
+				else{
+					nameAvailable=true;
+				}
+				antWarning=false;
+			} catch (error) {
+				console.error('导入失败:', error);
+				antWarning=true;
+			}
+		})();
 	});
 
 	let selectedPreset = $state(preset[0]);
@@ -148,17 +165,18 @@
 	async function checkName() {
 		isChecking = true;
 		const regex = /^[a-z0-9-]+$/; // 允许字母和连字符
-		let valid = regex.test(underName);
+		let valid = regex.test(undername);
 		if (valid) {
 			//检查是否可用
 			showAvialableCheck = false;
 			const { ANT } = await import('@ar.io/sdk/web');
 			const ant = ANT.init({ processId: 'gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk' });
 			const records = await ant.getRecords();
-			if (underName in records) {
+			if (undername in records) {
 				nameAvailable = false;
 			} else {
 				nameAvailable = true;
+				localStorage.setItem('undername', undername);
 			}
 			showAvialableCheck = true;
 		} else {
@@ -168,10 +186,16 @@
 		underNameChanged = false;
 	}
 
-	//let publishResult = $state(publish());
-	async function publishIt() {
-		//publishResult = publish();
-		//getHtml();
+	async function turboUpload() {
+		isUploading = true;
+		showLinktreeId = false;
+		linktreeId = await upload();
+		isUploading = false;
+		showLinktreeId = true;
+	}
+	async function publish() {
+		//先上传
+		//再发到AO
 	}
 </script>
 
@@ -238,7 +262,15 @@
 {#each data.links as link, index}
 	<a class="button button-{link.class}" href={link.url} target="_blank" rel="noopener" role="button"
 		><img class="icon" aria-hidden="true" src={link.icon} alt={link.text} />{link.text}</a
-	> <sup title="delete" style="color:red" onclick={() => deleteLink(index)}>✖</sup>
+	>
+	<span
+		title="delete"
+		role="button"
+		tabindex="0"
+		onkeydown={() => deleteLink(index)}
+		style="color:red;vertical-align:super"
+		onclick={() => deleteLink(index)}>✖</span
+	>
 {/each}
 
 <hr />
@@ -256,6 +288,11 @@
 >
 	<div style="text-align: right;">
 		<span
+			role="button"
+			tabindex="0"
+			onkeydown={() => {
+				isLinkAdding = false;
+			}}
 			onclick={() => {
 				isLinkAdding = false;
 			}}
@@ -310,25 +347,15 @@
 	<br />
 </div>
 <hr />
-<button title="Modify this page to active this button" onclick={upload}
+<button title="Modify this page to active this button" onclick={turboUpload}
 	>Upload this linktree page to Arweave</button
 >
-<div>Link Tree ID:{linktreeId}</div>
-<div>
-	<p>Upload your linktree to Arweave...</p>
-	<p>you linktree upload sucessful, ID：</p>
-	<p>sign undername for you, this will take time, waiting</p>
-	<!-- {#await publishResult}
-		<p>...rolling</p>
-	{:then result}
-		<p>get Result: {result}!</p>
-	{:catch error}
-		<p style="color: red">{error.message}</p>
-	{/await} -->
-</div>
-
+<p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>Upload your linktree to Arweave...</p>
+<p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>Link Tree ID:{linktreeId}</p>
 <hr />
-<div>
+
+
+<div class:hidden={antWarning}>
 	<div>
 		<label for="custom_text">UnderName</label>
 		<input
@@ -336,27 +363,30 @@
 			style="width: 100px;"
 			id="custom_text"
 			placeholder="Enter you undername"
-			bind:value={underName}
+			bind:value={undername}
 			onkeydown={onUnderNameChanged}
 		/>
 		<button onclick={checkName}>Valid Check</button>
-		<span class:hidden={!isChecking}>🛑checking</span>
-		<span class:hidden={!showAvialableCheck}>
-			<span class:hidden={!nameAvailable}>✔available</span>
-			<span class:hidden={nameAvailable}>✖taken</span>
+		<span style="font-size:12px;color:coral" class:hidden={!isChecking}> 🛑 checking</span>
+		<span style="font-size:12px" class:hidden={!showAvialableCheck}>
+			<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}> ✔ {undername} is available</span>
+			<span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}> ✖ {undername} is taken</span>
 		</span>
-		<span class:hidden={!showAlphabetOnly}>🔤invalid character</span>
+		<span class:hidden={!showAlphabetOnly}>⚠invalid character</span>
 	</div>
 
 	<div class:hidden={underNameChanged || showAlphabetOnly}>
 		<div class:hidden={nameAvailable}>
-			<strong>{underName} is ready!</strong> vist {underName}_{gatewayDomainName} or
-			<a href="...">more domain names</a>
+			<strong style="color:green">{undername} is ready! </strong> vist <code> <a style="text-decoration: none;" href="https://{undername}_{gatewayDomainName}">https://{undername}_{gatewayDomainName}</a></code> or
+		<code><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a></code>
 		</div>
-		<button class:hidden={!nameAvailable} disabled={!nameAvailable}
-			>Publish this page to {underName}_{gatewayDomainName}</button
+		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publish}
+			>Publish to {undername}_{gatewayDomainName}</button
 		>
 	</div>
+</div>
+<div style="color:orangered" class:hidden={!antWarning}>
+ Warning: ANT service is unvailable now, refresh or try it later.
 </div>
 <hr />
 

@@ -6,8 +6,9 @@
 export async function upload() {	
 
 	const fileContent =prepare();
+
 	console.log(fileContent);
-	return;
+	return "-k7t8xMoB8hW482609Z9F4bTFMC3MnuW8bTvTyT8pFI";
 	const arweave = new Arweave({});
 	const jwk = await arweave.wallets.generate();	
 	const turboAuthClient = TurboFactory.authenticated({privateKey: jwk,...developmentTurboConfiguration});	
