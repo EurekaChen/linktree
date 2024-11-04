@@ -27,7 +27,7 @@
 
 	let defaultGatewayDomainName = 'ar.io';
 
-	let defaultRoot = 'https://linktree' + defaultGatewayDomainName;
+	let defaultRoot = 'https://linktree.' + defaultGatewayDomainName;
 
 	let defaultIconRoot = defaultRoot + '/img/icon/';
 	//let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
