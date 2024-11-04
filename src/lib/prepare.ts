@@ -72,6 +72,21 @@ export function prepare() {
     `;
 	}
 
+	result+=`
+	<a id="edit" style="text-decoration: none;" href="https://linktree.ar.io?edit=demo">🖉</a>
+					<a id="gateway" style="text-decoration: none;" href="https://linktree.ar.io/gateway?undername=demo">🌍</a>
+					<script>						
+						const hostname = window.location.hostname; 
+						const parts = hostname.split('.'); 
+						const gatewayDomainName = parts.slice(-2).join('.'); 						
+						const name=parts.slice(-3,-2)[0];
+						console.log(name);
+						const undername=name.replace("_linktree","");
+						const editLink=document.getElementById('edit');
+						editLink.href="https://linktree."+gatewayDomainName+"?edit="+undername;
+						const gatewayLink=document.getElementById('gateway');
+						gatewayLink.href="https://linktree."+gatewayDomainName+"/gateway?undername="+undername;
+					</script>	`;
 	result += `      
             </div>
         </div>
