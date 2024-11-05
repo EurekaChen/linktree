@@ -8,7 +8,7 @@
 	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
 	import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 
-	let walletConnected=$state(false);
+	let walletConnected = $state(false);
 
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
@@ -18,6 +18,8 @@
 	let uploadFailed = $state(false);
 
 	let uploadEnabled = $state(false);
+
+	let isPublishUndername = $state(false);
 
 	let undername = $state('demo'); //onmount中改变
 	let linktreeId = $state('4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y'); //demo
@@ -30,6 +32,7 @@
 	let underNameChanged = $state(false);
 
 	let showPublish = $state(false);
+	let isAoSending=$state(false);
 	let showSuccess = $state(false);
 	let showFail = $state(false);
 
@@ -103,7 +106,7 @@
 		let getlinktreeId = localStorage.getItem('linktreeId');
 		if (getlinktreeId) {
 			linktreeId = getlinktreeId;
-			showLinktreeId=true;
+			showLinktreeId = true;
 		}
 		// 获取linktree记录信息
 		//const io = IO.init();
@@ -136,10 +139,9 @@
 	let addLinkText = $state(preset[0].text);
 	let addLinkUrl = $state(defaultRoot);
 
-	
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
-		showLinktreeId=false;
+		showLinktreeId = false;
 		uploadEnabled = true;
 		console.log('saved:' + localStorage.getItem('data'));
 	}
@@ -170,6 +172,8 @@
 
 	async function checkName() {
 		isChecking = true;
+		showSuccess=false;
+		showFail=false;
 		const regex = /^[a-z0-9-]+$/; // 允许字母和连字符
 		let valid = regex.test(undername);
 		if (valid) {
@@ -197,17 +201,17 @@
 		showLinktreeId = false;
 		linktreeId = await upload();
 		if (linktreeId == 'failed') {
-			isUploading=false;
+			isUploading = false;
 			uploadFailed = true;
 			showLinktreeId = false;
 		} else {
 			isUploading = false;
 			showLinktreeId = true;
-			localStorage.setItem("linktreeId",linktreeId);
+			localStorage.setItem('linktreeId', linktreeId);
 		}
 	}
 
-	let activeAddress;
+	//let activeAddress;
 	async function connectWallet() {
 		try {
 			await window.arweaveWallet.connect([
@@ -216,14 +220,14 @@
 				'SIGN_TRANSACTION'
 			]);
 			walletConnected = true;
-			activeAddress = await window.arweaveWallet.getActiveAddress();
+			//activeAddress = await window.arweaveWallet.getActiveAddress();
 			//connected(activeAddress);
 		} catch (error) {
-			console.log("Connect error:",error);			
+			console.log('Connect error:', error);
 			walletConnected = false;
 		}
 	}
-	
+
 	async function disconnectWallet() {
 		try {
 			// 请求断开 ArConnect 钱包
@@ -234,10 +238,11 @@
 		}
 	}
 
-	async function publish() {		
+	async function publish() {
 		//发到AO进行发布
 
 		showPublish = true;
+		isAoSending=true;
 		const undernameProcessId = 'GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E';
 		const msgId = await message({
 			process: undernameProcessId,
@@ -253,10 +258,13 @@
 
 		const readResult = await result({ message: msgId, process: undernameProcessId });
 		let reply = readResult.Messages[0].Data;
+		isAoSending=false;
 		if (reply == 'success') {
 			showSuccess = true;
+			showFail=false;
 		} else {
 			showFail = true;
+			showSuccess=false;
 		}
 	}
 </script>
@@ -418,75 +426,111 @@
 	Upload to Arweave Failed, try it layter.
 </p>
 <hr />
-
-<div class:hidden={antWarning}>
-	{#if walletConnected}
-	<button type="button" onclick={disconnectWallet}>Disconnect</button>
-	{:else}
-		<button type="button" class="btn btn-primary" onclick={connectWallet}>Connect Wallet</button>
-	{/if}								
-	<div>
-		<label for="custom_text">UnderName</label>
-		<input
-			type="text"
-			style="width: 100px;"
-			id="custom_text"
-			placeholder="Enter you undername"
-			bind:value={undername}
-			onkeydown={onUnderNameChanged}
-		/>
-		<button onclick={checkName}>Valid Check</button>
-		<span style="font-size:12px;color:coral" class:hidden={!isChecking}> 🛑 checking</span>
-		<span style="font-size:12px" class:hidden={!showAvialableCheck}>
-			<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
-				✔ {undername} is available</span
+<button
+	class:hidden={isPublishUndername}
+	onclick={() => {
+		isPublishUndername = true;
+	}}>Publish Undername</button
+>
+<br />
+<div
+	style="border:1px solid gray;padding:14px; background-color:#e3f2fd;border-radius:4px"
+	class:hidden={!isPublishUndername}
+>
+	<div style="text-align: right;">
+		{#if walletConnected}
+			<button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectWallet}
+				>Disconnect</button
 			>
-			<span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
-				✖ {undername} is taken</span
+		{:else}
+			<span style="font-size: 14px;color:darkblue">Info:Connect wallet to publish undername </span>
+			<button
+				style="font-size: 14px; color:darkblue"
+				type="button"
+				class="btn btn-primary"
+				onclick={connectWallet}>Connect Wallet</button
 			>
-		</span>
-		<span style="font-size:12px;color:darkred" class:hidden={!showAlphabetOnly}
-			>⚠invalid character</span
+		{/if}
+		<span
+			role="button"
+			tabindex="0"
+			onkeydown={() => {
+				isPublishUndername = false;
+			}}
+			onclick={() => {
+				isPublishUndername = false;
+			}}
+		>
+			✖close</span
 		>
 	</div>
 
-	<div class:hidden={underNameChanged || showAlphabetOnly}>
-		<div class:hidden={nameAvailable}>
-			<strong style="color:green">{undername} is ready! </strong> vist
-			<code>
-				<a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"
-					>https://{undername}_linktree.{gatewayDomainName}</a
-				></code
-			>
-			or
-			<code
-				><a style="text-decoration: none;" href="/gateway?undername={undername}"
-					>more domain names</a
-				></code
+	<br />
+	<div class:hidden={antWarning}>
+		<div>
+			<label for="custom_text">UnderName</label>
+			<input
+				type="text"
+				style="width: 100px;"
+				id="custom_text"
+				placeholder="Enter you undername"
+				bind:value={undername}
+				onkeydown={onUnderNameChanged}
+			/>
+			<button onclick={checkName}>Valid Check</button>
+			<span style="font-size:12px;color:coral" class:hidden={!isChecking}> 🛑 checking</span>
+			<span style="font-size:12px" class:hidden={!showAvialableCheck}>
+				<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
+					✔ {undername} is available</span
+				>
+				<span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
+					✖ {undername} is taken</span
+				>
+			</span>
+			<span style="font-size:12px;color:darkred" class:hidden={!showAlphabetOnly}
+				>⚠invalid character</span
 			>
 		</div>
-		<button class:hidden={!nameAvailable} disabled={!nameAvailable} onclick={publish}
-			>Publish to {undername}_linktree.{gatewayDomainName}</button
-		>
-		<div class:hidden={!showPublish}>
-			<p style="color:darkblue">
-				<!--正在发往AO处理域名解析事项...-->
-				Sending to AO to handle undername resolution...
-			</p>
-			<p style="color:darkorange" class:hidden={!showFail}>
-				<!--AO处理过程中遇到问题，请稍候再试-->
-				We encountered an issue during the AO processing. Please try again later.
-			</p>
-			<p style="color:darkgreen" class:hidden={!showSuccess}>
-				<!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
-				It will take some time to resolve the undername until it takes effect. Please visit your linktree (https://{undername}_linktree.{gatewayDomainName})
-				or check the results on this page later.
-			</p>
+
+		<div class:hidden={underNameChanged || showAlphabetOnly}>
+			<button class:hidden={!nameAvailable} disabled={!walletConnected} onclick={publish} title="connect wallet to publish"
+				>Publish to {undername}_linktree.{gatewayDomainName}</button
+			>
+			<div class:hidden={!showPublish}>
+				<p style="color:darkblue" class:hidden={!isAoSending}>
+					<!--正在发往AO处理域名解析事项...-->
+					Sending to AO to handle undername resolution...
+				</p>
+				<p style="color:darkorange" class:hidden={!showFail}>
+					<!--AO处理过程中遇到问题，请稍候再试-->
+					We encountered an issue during the AO processing. Please try again later.
+				</p>
+				<p style="color:darkgreen" class:hidden={!showSuccess}>
+					<!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
+					It will take some time to resolve the undername until it takes effect. Please visit your linktree
+					(https://{undername}_linktree.{gatewayDomainName}) or check the results on this page
+					later.
+				</p>
+			</div>
 		</div>
+	</div>
+	<div style="color:orangered;margin:10px" class:hidden={!antWarning}>
+		Warning: ANT service is unvailable now, refresh or try it later.
 	</div>
 </div>
-<div style="color:orangered" class:hidden={!antWarning}>
-	Warning: ANT service is unvailable now, refresh or try it later.
+<hr />
+<div class:hidden={nameAvailable}>
+	<strong style="color:green">{undername} is ready! </strong> vist
+	<code>
+		<a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"
+			>https://{undername}_linktree.{gatewayDomainName}</a
+		></code
+	>
+	or
+	<code
+		><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a
+		></code
+	>
 </div>
 <hr />
 
