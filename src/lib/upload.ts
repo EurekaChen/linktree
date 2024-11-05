@@ -31,31 +31,19 @@ export async function upload() {
 
 
 		 // 创建一个可读流
+		 let fileSize:number;
 		 const readableStream = new ReadableStream({
-			start(controller) {				
-				controller.enqueue(new TextEncoder().encode(fileContent)); // 将文本编码为 Uint8Array 并推入流中
+			start(controller) {		
+				const stream=	new TextEncoder().encode(fileContent)	
+				fileSize=stream.length;
+				controller.enqueue(stream); // 将文本编码为 Uint8Array 并推入流中
 				controller.close(); // 指示流结束
 			}
 		});
 
-		async function getStreamLength(readableStream) {
-			const reader = readableStream.getReader();
-			let totalLength = 0;
-		
-			try {
-				while (true) {
-					const { done, value } = await reader.read();
-					if (done) break; // 流结束
-					totalLength += value.length; // 累加每个块的长度
-				}
-			} finally {
-				reader.releaseLock(); // 释放锁
-			}
-		
-			return totalLength; // 返回总长度
-		}
+	
 
-	    const	fileSize=await getStreamLength(readableStream);
+	   
 
 		const uploadResult = await turboAuthClient.uploadFile({
 			fileStreamFactory:()=>readableStream,
