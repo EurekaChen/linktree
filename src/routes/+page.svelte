@@ -168,6 +168,7 @@
 		isChecking = false;
 		showAvialableCheck = false;
 		showAlphabetOnly = false;
+		nameAvailable=true;
 	}
 
 	async function checkName() {
