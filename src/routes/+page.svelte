@@ -382,7 +382,7 @@
 			class="form-control"
 			type="text"
 			placeholder="Enter Your Icon URL OR Keep Default"
-			value={addLinkIcon}
+			bind:value={addLinkIcon}
 		/>
 	</div>
 	<div>
@@ -391,12 +391,12 @@
 			class="form-control"
 			type="text"
 			placeholder="Enter Your Link Text Or Keep Default"
-			value={addLinkText}
+			bind:value={addLinkText}
 		/>
 	</div>
 	<div>
 		<label for="custom_text">Link</label>
-		<input class="form-control" type="text" placeholder="Enter Your Link URL" value={addLinkUrl} />
+		<input class="form-control" type="text" placeholder="Enter Your Link URL" bind:value={addLinkUrl} />
 	</div>
 
 	<a
