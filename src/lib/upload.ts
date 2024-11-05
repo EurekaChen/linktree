@@ -1,61 +1,33 @@
-import { ArconnectSigner, TurboFactory, developmentTurboConfiguration } from '@ardrive/turbo-sdk/web';
+import { TurboFactory, developmentTurboConfiguration } from '@ardrive/turbo-sdk/web';
 import Arweave from 'arweave';
 import { prepare } from './prepare';
-//import { Readable } from 'stream';
-
-
-
 
 export async function upload() {
 	const fileContent = prepare();
-	console.log(fileContent);
+	//console.log(fileContent);
 	//demo_linktree.io:4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
-	//return '4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y';
-	//try {
-		//const arweave = new Arweave({});
-		// const jwk = await arweave.wallets.generate();
-		// const turboAuthClient = TurboFactory.authenticated({
-		// 	privateKey: jwk,
-		// 	...developmentTurboConfiguration
-		// });
-		//const signer=new ArconnectSigner(window.arweaveWallet);	
-		//const fileSize = Buffer.byteLength(fileContent, 'utf-8');
-	//	const turboAuthClient = TurboFactory.authenticated(signer,...developmentTurboConfiguration);
-
-	//const  Arweave  = await import('arweave');
-		
-	const arweave = new Arweave({});
-			const jwk = await arweave.wallets.generate();
-		 const turboAuthClient = TurboFactory.authenticated({	privateKey: jwk,...developmentTurboConfiguration});
+	try {
+		const arweave = new Arweave({});
+		const jwk = await arweave.wallets.generate();
+		const turboAuthClient = TurboFactory.authenticated({
+			privateKey: jwk,
+			...developmentTurboConfiguration
+		});
 		console.log('将linktree html文件发布到Turbo服务中...');
 
-
-		 // 创建一个可读流
-		 let fileSize:number;
-		 const readableStream = new ReadableStream({
-			start(controller) {		
-				const stream=	new TextEncoder().encode(fileContent)	
-				fileSize=stream.length;
+		// 创建一个可读流
+		let fileSize: number;
+		const readableStream = new ReadableStream({
+			start(controller) {
+				const stream = new TextEncoder().encode(fileContent);
+				fileSize = stream.length * 8;
 				controller.enqueue(stream); // 将文本编码为 Uint8Array 并推入流中
 				controller.close(); // 指示流结束
 			}
 		});
 
-	
-
-	   
-
 		const uploadResult = await turboAuthClient.uploadFile({
-			fileStreamFactory:()=>readableStream,
-			//fileStreamFactory:()=> createReadableStream(fileContent),
-			//fileStreamFactory: () => {return Buffer.from(fileContent)},
-			// fileStreamFactory: () => {
-			// 	const readable = new Readable();
-			// 	readable._read = () => {}; // _read is required but you can noop it
-			// 	readable.push(fileContent);
-			// 	readable.push(null); // 表示文件结束
-			// 	return readable;
-			// },
+			fileStreamFactory: () => readableStream,
 			fileSizeFactory: () => fileSize,
 			dataItemOpts: {
 				// 加入Content-Type以便直接显示而不是下载
@@ -72,11 +44,9 @@ export async function upload() {
 
 		console.log('返回结果：', uploadResult);
 		//获取ID
-		console.log('id',uploadResult.id)
 		return uploadResult.id;
-	// } catch (error) {
-	// 	console.log(error);
-	// 	return 'failed';
-	// }
+	} catch (error) {
+		console.log('上传到Arweave出错:', error);
+		return 'failed';
+	}
 }
-

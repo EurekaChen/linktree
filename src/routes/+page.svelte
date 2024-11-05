@@ -101,6 +101,7 @@
 		let getlinktreeId = localStorage.getItem('linktreeId');
 		if (getlinktreeId) {
 			linktreeId = getlinktreeId;
+			showLinktreeId=true;
 		}
 		// 获取linktree记录信息
 		//const io = IO.init();
@@ -133,17 +134,17 @@
 	let addLinkText = $state(preset[0].text);
 	let addLinkUrl = $state(defaultRoot);
 
+	
 	function save() {
 		localStorage.setItem('data', JSON.stringify(data));
+		showLinktreeId=false;
 		uploadEnabled = true;
 		console.log('saved:' + localStorage.getItem('data'));
 	}
 
 	function deleteLink(index: number) {
 		data.links.splice(index, 1);
-
-		localStorage.setItem('data', JSON.stringify(data));
-		uploadEnabled = true;
+		save();
 	}
 
 	function onSelectChange() {
@@ -155,8 +156,7 @@
 	function addLink() {
 		let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
 		data.links.push(item);
-		localStorage.setItem('data', JSON.stringify(data));
-		uploadEnabled = true;
+		save();
 	}
 
 	function onUnderNameChanged() {
@@ -201,6 +201,7 @@
 		} else {
 			isUploading = false;
 			showLinktreeId = true;
+			localStorage.setItem("linktreeId",linktreeId);
 		}
 	}
 	async function publish() {		
@@ -433,17 +434,17 @@
 			>Publish to {undername}_linktree.{gatewayDomainName}</button
 		>
 		<div class:hidden={!showPublish}>
-			<p>
+			<p style="color:darkblue">
 				<!--正在发往AO处理域名解析事项...-->
 				Sending to AO to handle undername resolution...
 			</p>
-			<p class:hidden={!showFail}>
+			<p style="color:darkorange" class:hidden={!showFail}>
 				<!--AO处理过程中遇到问题，请稍候再试-->
 				We encountered an issue during the AO processing. Please try again later.
 			</p>
-			<p class:hidden={!showSuccess}>
+			<p style="color:darkgreen" class:hidden={!showSuccess}>
 				<!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
-				It will take some time to resolve the undername until it takes effect. Please visit your linktree
+				It will take some time to resolve the undername until it takes effect. Please visit your linktree (https://{undername}_linktree.{gatewayDomainName})
 				or check the results on this page later.
 			</p>
 		</div>
