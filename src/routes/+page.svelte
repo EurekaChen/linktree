@@ -8,6 +8,8 @@
 	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
 	import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
 
+	let walletConnected=$state(false);
+
 	let isLogoEditing = $state(false);
 	let isLinkAdding = $state(false);
 
@@ -204,6 +206,34 @@
 			localStorage.setItem("linktreeId",linktreeId);
 		}
 	}
+
+	let activeAddress;
+	async function connectWallet() {
+		try {
+			await window.arweaveWallet.connect([
+				'ACCESS_ADDRESS',
+				'ACCESS_PUBLIC_KEY',
+				'SIGN_TRANSACTION'
+			]);
+			walletConnected = true;
+			activeAddress = await window.arweaveWallet.getActiveAddress();
+			//connected(activeAddress);
+		} catch (error) {
+			console.log("Connect error:",error);			
+			walletConnected = false;
+		}
+	}
+	
+	async function disconnectWallet() {
+		try {
+			// 请求断开 ArConnect 钱包
+			await window.arweaveWallet.disconnect();
+			walletConnected = false;
+		} catch (error) {
+			console.error('Failed to disconnect from ArConnect wallet', error);
+		}
+	}
+
 	async function publish() {		
 		//发到AO进行发布
 
@@ -390,6 +420,11 @@
 <hr />
 
 <div class:hidden={antWarning}>
+	{#if walletConnected}
+	<button type="button" onclick={disconnectWallet}>Disconnect</button>
+	{:else}
+		<button type="button" class="btn btn-primary" onclick={connectWallet}>Connect Wallet</button>
+	{/if}								
 	<div>
 		<label for="custom_text">UnderName</label>
 		<input
