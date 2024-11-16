@@ -6,7 +6,7 @@
 
 	import { upload } from '$lib/upload';
 	import { getGatewayDomainName } from '$lib/getGatewayDomainName';
-	import { createDataItemSigner, message, result } from '@permaweb/aoconnect';
+	import { createDataItemSigner, dryrun, message, result } from '@permaweb/aoconnect';
 
 	let walletConnected = $state(false);
 
@@ -32,7 +32,7 @@
 	let underNameChanged = $state(false);
 
 	let showPublish = $state(false);
-	let isAoSending=$state(false);
+	let isAoSending = $state(false);
 	let showSuccess = $state(false);
 	let showFail = $state(false);
 
@@ -109,7 +109,6 @@
 			showLinktreeId = true;
 		}
 
-
 		console.log(document.styleSheets);
 
 		// 获取linktree记录信息
@@ -172,13 +171,13 @@
 		isChecking = false;
 		showAvialableCheck = false;
 		showAlphabetOnly = false;
-		nameAvailable=true;
+		nameAvailable = true;
 	}
 
 	async function checkName() {
 		isChecking = true;
-		showSuccess=false;
-		showFail=false;
+		showSuccess = false;
+		showFail = false;
 		const regex = /^[a-z0-9-]+$/; // 允许字母和连字符
 		let valid = regex.test(undername);
 		if (valid) {
@@ -216,7 +215,7 @@
 		}
 	}
 
-	//let activeAddress;
+	let activeAddress;
 	async function connectWallet() {
 		try {
 			await window.arweaveWallet.connect([
@@ -225,8 +224,23 @@
 				'SIGN_TRANSACTION'
 			]);
 			walletConnected = true;
-			//activeAddress = await window.arweaveWallet.getActiveAddress();
+			activeAddress = await window.arweaveWallet.getActiveAddress();
 			//connected(activeAddress);
+			//获取已经有的undername
+			let getPlayerMsg = await dryrun({
+				process: 'GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E',
+				tags: [{ name: 'Action', value: 'GetUser' }],
+				data: activeAddress
+			});
+
+			//是否查询到玩家信息
+			if (getPlayerMsg.Messages.length > 0) {
+				//
+				//return JSON.parse(getPlayerMsg.Messages[0].Data);
+
+			} else {
+				//return null;
+			}
 		} catch (error) {
 			console.log('Connect error:', error);
 			walletConnected = false;
@@ -247,7 +261,7 @@
 		//发到AO进行发布
 
 		showPublish = true;
-		isAoSending=true;
+		isAoSending = true;
 		const undernameProcessId = 'GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E';
 		const msgId = await message({
 			process: undernameProcessId,
@@ -263,13 +277,13 @@
 
 		const readResult = await result({ message: msgId, process: undernameProcessId });
 		let reply = readResult.Messages[0].Data;
-		isAoSending=false;
+		isAoSending = false;
 		if (reply == 'success') {
 			showSuccess = true;
-			showFail=false;
+			showFail = false;
 		} else {
 			showFail = true;
-			showSuccess=false;
+			showSuccess = false;
 		}
 	}
 </script>
@@ -401,7 +415,12 @@
 	</div>
 	<div>
 		<label for="custom_text">Link</label>
-		<input class="form-control" type="text" placeholder="Enter Your Link URL" bind:value={addLinkUrl} />
+		<input
+			class="form-control"
+			type="text"
+			placeholder="Enter Your Link URL"
+			bind:value={addLinkUrl}
+		/>
 	</div>
 
 	<a
@@ -469,59 +488,63 @@
 			✖close</span
 		>
 	</div>
-	<hr>
-	<table style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
+	<hr />
+	<table
+		style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;"
+	>
 		<caption style="font-size: 14px;"><strong>Your undernames</strong></caption>
 		<thead>
-		<tr style="background:#f5f5f5">
-			<th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
-			<th style="padding:4px;text-align:center;border:1px solid #ddd">Linktree Id</th>
-			<th style="padding:4px;text-align:center;border:1px solid #ddd">Edit</th>
-			<th style="padding:4px;text-align:center;border:1px solid #ddd">Delete</th>
-		</tr></thead>
+			<tr style="background:#f5f5f5">
+				<th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
+				<th style="padding:4px;text-align:center;border:1px solid #ddd">Linktree Id</th>
+				<th style="padding:4px;text-align:center;border:1px solid #ddd">Edit</th>
+				<th style="padding:4px;text-align:center;border:1px solid #ddd">Delete</th>
+			</tr></thead
+		>
 		<tbody>
-		<tr>
-			<td style="padding:4px;border:1px solid #ddd">{undername}</td>
-			<td style="padding:4px;border:1px solid #ddd">4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
-			</td>
-			<td style="padding:4px;border:1px solid #ddd">🖉</td>
-			<td style="padding:4px;border:1px solid #ddd">✖</td>			
-		</tr>
-		<tr>
-			<td style="padding:4px;border:1px solid #ddd">emily</td>
-			<td style="padding:4px;border:1px solid #ddd">
-				IVbHJBVdBEzv_90VUS19f2NTps-fHDG1a7a9LX-Lg8g
-			</td>
-			<td style="padding:4px;border:1px solid #ddd">🖉</td>
-			<td style="padding:4px;border:1px solid #ddd">✖</td>
-		</tr>
-	</tbody>
+			<tr>
+				<td style="padding:4px;border:1px solid #ddd">{undername}</td>
+				<td style="padding:4px;border:1px solid #ddd"
+					>4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
+				</td>
+				<td style="padding:4px;border:1px solid #ddd">🖉</td>
+				<td style="padding:4px;border:1px solid #ddd">✖</td>
+			</tr>
+			<tr>
+				<td style="padding:4px;border:1px solid #ddd">emily</td>
+				<td style="padding:4px;border:1px solid #ddd">
+					IVbHJBVdBEzv_90VUS19f2NTps-fHDG1a7a9LX-Lg8g
+				</td>
+				<td style="padding:4px;border:1px solid #ddd">🖉</td>
+				<td style="padding:4px;border:1px solid #ddd">✖</td>
+			</tr>
+		</tbody>
 	</table>
-	<hr>
+	<hr />
 	<div style="font-size: 14px; font-weight:bolder">Publish new undername</div>
-	
+
 	<div class:hidden={antWarning} style="background-color: #bbdefb;padding:10px; font-size:14px">
-		<div style="margin-bottom:4px; margin-top:4px; padding:0px;border:1px solid green">
+		<div>
 			<label for="custom_text">Linktree Id</label>
 			<input
 				type="text"
-				style="width: 300px;margin-bottom:5px"
+				style="width: 350px;margin-bottom:5px"
 				id="custom_text"
 				placeholder="Enter you Linktree Id"
-				bind:value={linktreeId}			
-			/>			
+				bind:value={linktreeId}
+			/>
 		</div>
-		<div style="margin-bottom:4px; margin-top:4px; padding:0px;border:1px solid red">
+		<div>
 			<label for="custom_text">UnderName</label>
 			<input
 				type="text"
-				style="width: 100px;margin-bottom:5px"
+				style="width: 150px;margin-bottom:5px"
 				id="custom_text"
 				placeholder="Enter you undername"
 				bind:value={undername}
 				onkeydown={onUnderNameChanged}
 			/>
-			<button onclick={checkName}>Valid Check</button>
+			<button onclick={checkName}>Check Validity</button>
 			<span style="font-size:12px;color:coral" class:hidden={!isChecking}> 🛑 checking</span>
 			<span style="font-size:12px" class:hidden={!showAvialableCheck}>
 				<span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
@@ -535,11 +558,19 @@
 				>⚠invalid character</span
 			>
 		</div>
-
+		<div style="font-size:12px;color:darkgreen">
+			Publish <code>{linktreeId}</code> to <code>{undername}_linktree.{gatewayDomainName}</code>
+		</div>
 		<div class:hidden={underNameChanged || showAlphabetOnly}>
-			<button class:hidden={!nameAvailable} disabled={!walletConnected} onclick={publish} title="connect wallet to publish"
-				>Publish to {undername}_linktree.{gatewayDomainName}</button
-			>
+			<button
+				class:hidden={!nameAvailable}
+				disabled={!walletConnected}
+				onclick={publish}
+				title="connect wallet to publish"
+				><span class:hidden={!walletConnected}>Publish</span><span class:hidden={walletConnected}
+					>Connect Wallet Before Publishing</span
+				>
+			</button>
 			<div class:hidden={!showPublish}>
 				<p style="color:darkblue" class:hidden={!isAoSending}>
 					<!--正在发往AO处理域名解析事项...-->
