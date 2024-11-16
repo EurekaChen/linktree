@@ -505,7 +505,7 @@
 			<label for="custom_text">Linktree Id</label>
 			<input
 				type="text"
-				style="width: 300px;"
+				style="width: 300px;margin-bottom:5px"
 				id="custom_text"
 				placeholder="Enter you Linktree Id"
 				bind:value={linktreeId}			
@@ -515,7 +515,7 @@
 			<label for="custom_text">UnderName</label>
 			<input
 				type="text"
-				style="width: 100px;"
+				style="width: 100px;margin-bottom:5px"
 				id="custom_text"
 				placeholder="Enter you undername"
 				bind:value={undername}
