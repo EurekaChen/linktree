@@ -108,6 +108,10 @@
 			linktreeId = getlinktreeId;
 			showLinktreeId = true;
 		}
+
+
+		console.log(document.styleSheets);
+
 		// 获取linktree记录信息
 		//const io = IO.init();
 		//const record = await io.getArNSRecord({ name: 'linktree' });
@@ -465,10 +469,49 @@
 			✖close</span
 		>
 	</div>
-
-	<br />
-	<div class:hidden={antWarning}>
-		<div>
+	<hr>
+	<table style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
+		<caption style="font-size: 14px;"><strong>Your undernames</strong></caption>
+		<thead>
+		<tr style="background:#f5f5f5">
+			<th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
+			<th style="padding:4px;text-align:center;border:1px solid #ddd">Linktree Id</th>
+			<th style="padding:4px;text-align:center;border:1px solid #ddd">Edit</th>
+			<th style="padding:4px;text-align:center;border:1px solid #ddd">Delete</th>
+		</tr></thead>
+		<tbody>
+		<tr>
+			<td style="padding:4px;border:1px solid #ddd">{undername}</td>
+			<td style="padding:4px;border:1px solid #ddd">4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
+			</td>
+			<td style="padding:4px;border:1px solid #ddd">🖉</td>
+			<td style="padding:4px;border:1px solid #ddd">✖</td>			
+		</tr>
+		<tr>
+			<td style="padding:4px;border:1px solid #ddd">emily</td>
+			<td style="padding:4px;border:1px solid #ddd">
+				IVbHJBVdBEzv_90VUS19f2NTps-fHDG1a7a9LX-Lg8g
+			</td>
+			<td style="padding:4px;border:1px solid #ddd">🖉</td>
+			<td style="padding:4px;border:1px solid #ddd">✖</td>
+		</tr>
+	</tbody>
+	</table>
+	<hr>
+	<div style="font-size: 14px; font-weight:bolder">Publish new undername</div>
+	
+	<div class:hidden={antWarning} style="background-color: #bbdefb;padding:10px; font-size:14px">
+		<div style="margin-bottom:4px; margin-top:4px; padding:0px;border:1px solid green">
+			<label for="custom_text">Linktree Id</label>
+			<input
+				type="text"
+				style="width: 300px;"
+				id="custom_text"
+				placeholder="Enter you Linktree Id"
+				bind:value={linktreeId}			
+			/>			
+		</div>
+		<div style="margin-bottom:4px; margin-top:4px; padding:0px;border:1px solid red">
 			<label for="custom_text">UnderName</label>
 			<input
 				type="text"
