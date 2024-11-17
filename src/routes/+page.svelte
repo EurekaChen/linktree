@@ -59,7 +59,8 @@
         localStorage.setItem("linktree", JSON.stringify(linktree));
         showLinktreeId = false;
         uploadEnabled = true;
-        console.log("saved:" + localStorage.getItem("linktree"));
+		localStorage.removeItem("linktreeId");
+        log("保存新的linktree,并移除旧的linktreeId");
     }
 
     function deleteLink(index: number) {

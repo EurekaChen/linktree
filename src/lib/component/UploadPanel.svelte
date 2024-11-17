@@ -8,11 +8,11 @@
 
   let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
 
-  console.log("uploadPanbel,isuploading:",isUploading);
-  
+  //查看缓存中是否有lintreeId
   if (typeof window !== "undefined") {
     let getlinktreeId = localStorage.getItem("linktreeId");
     if (getlinktreeId) {
+      //如果有的话，说明刚刚上传，需要显示
       linktreeId = getlinktreeId;
       showLinktreeId = true;
     }
@@ -22,11 +22,14 @@
     showLinktreeId = false;
     linktreeId = await upload();
     if (linktreeId == "failed") {
+      //上传失败
       isUploading = false;
       uploadFailed = true;
       showLinktreeId = false;
     } else {
+      //上传成功
       isUploading = false;
+      uploadEnabled = false;
       showLinktreeId = true;
       localStorage.setItem("linktreeId", linktreeId);
     }
@@ -42,7 +45,7 @@
   Upload your linktree to Arweave...
 </p>
 <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
-  Link Tree ID:{linktreeId}
+ Latest Link Tree ID: <code>{linktreeId}</code>
 </p>
 <p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
   Upload to Arweave Failed, try it layter.
