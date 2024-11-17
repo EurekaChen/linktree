@@ -16,5 +16,10 @@
 每次对页面进行修改则会产生一个新的linktree，因此原linktreeId作废（不再显示），需通过上传生成新的id。
 
 
+showLinktreeId：
+初始没有保存的linktreeId时，showLinktreedID为false，uploadEnabled为false
+当上传成功的时候显示，并且uploadEnabled为false。
+当修改并保存数据后，showLinktreeId为false，并且uploadEnabled为true。
+
 底部显示：
 当前页面linktreeid和undername 匹配，则显示成功发布。

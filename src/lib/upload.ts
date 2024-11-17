@@ -1,4 +1,4 @@
-import { TurboFactory, developmentTurboConfiguration } from "@ardrive/turbo-sdk/web";
+//import { TurboFactory, developmentTurboConfiguration } from "@ardrive/turbo-sdk/web";
 //import Arweave from "arweave";
 import { prepare } from "./prepare";
 
@@ -12,6 +12,9 @@ export async function upload() {
 
     //const arweave = new Arweave({});
     const jwk = await arweave.wallets.generate();
+
+	const { TurboFactory, developmentTurboConfiguration }=await import("@ardrive/turbo-sdk/web");
+
     const turboAuthClient = TurboFactory.authenticated({
       privateKey: jwk,
       ...developmentTurboConfiguration

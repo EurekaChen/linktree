@@ -1,0 +1,1 @@
+export const defaultGatewayDomainName = "ar.io"; //defaultLinktree.json中使用的域名

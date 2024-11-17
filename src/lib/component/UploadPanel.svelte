@@ -13,6 +13,8 @@
 
   let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
 
+  console.log("uploadPanbel,isuploading:",isUploading);
+  
   if (typeof window !== "undefined") {
     let getlinktreeId = localStorage.getItem("linktreeId");
     if (getlinktreeId) {
