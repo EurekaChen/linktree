@@ -6,11 +6,6 @@
   let isUploading = $state(false);
   let uploadFailed = $state(false);
 
-  //
-  //let uploadEnabled = $state(false);
-  //获取linktreeId
-  //let showLinktreeId = $state(false);
-
   let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
 
   console.log("uploadPanbel,isuploading:",isUploading);
@@ -52,3 +47,9 @@
 <p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
   Upload to Arweave Failed, try it layter.
 </p>
+
+<style>
+  .hidden {
+      display: none;
+  } 
+</style>

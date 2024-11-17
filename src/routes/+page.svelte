@@ -1,13 +1,13 @@
-<script lang="ts">
-    import PublishPanel from "$lib/component/PublishPanel.svelte";
-    import UploadPanel from "$lib/component/UploadPanel.svelte";
-  
+<script lang="ts"> 
     import preset from "./preset.json";
     import defaultLinktree from "./defaultLinktree.json";
 
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
     import { defaultGatewayDomainName } from "$lib/constant";
     import { log } from "$lib/store/Debug";
+
+	import UploadPanel from "$lib/component/UploadPanel.svelte";
+    import PublishPanel from "$lib/component/PublishPanel.svelte";   
 
     //使用去中心化域名   
     // svelte-ignore non_reactive_update
