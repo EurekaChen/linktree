@@ -8,7 +8,7 @@
     gatewayDomainName = getGatewayDomainName();
   }
 
-  let walletConnected = $state(false);
+  let arWalletConnected = $state(false);
   let antWarning = $state(true);
 
   let nameAvailable = $state(false);
@@ -67,42 +67,63 @@
     underNameChanged = false;
   }
 
+  async function getUndernames(activeAddress) {
+       //connected(activeAddress);
+       //获取已经有的undername
+       let getPlayerMsg = await dryrun({
+         process: "GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E",
+         tags: [{ name: "Action", value: "GetUser" }],
+         data: activeAddress
+       });
+ 
+       //是否查询到玩家信息
+       if (getPlayerMsg.Messages.length > 0) {
+         //
+         //return JSON.parse(getPlayerMsg.Messages[0].Data);
+       } else {
+         //return null;
+       }
+     }
+
   let activeAddress;
-  async function connectWallet() {
+  async function connectARWallet() {
     try {
       await window.arweaveWallet.connect([
         "ACCESS_ADDRESS",
         "ACCESS_PUBLIC_KEY",
         "SIGN_TRANSACTION"
       ]);
-      walletConnected = true;
+      arWalletConnected = true;
       activeAddress = await window.arweaveWallet.getActiveAddress();
-      //connected(activeAddress);
-      //获取已经有的undername
-      let getPlayerMsg = await dryrun({
-        process: "GhMUqZB7qFf9iJ5myIsJJkeFH8CN9QeOQjJoLvhHV5E",
-        tags: [{ name: "Action", value: "GetUser" }],
-        data: activeAddress
-      });
-
-      //是否查询到玩家信息
-      if (getPlayerMsg.Messages.length > 0) {
-        //
-        //return JSON.parse(getPlayerMsg.Messages[0].Data);
-      } else {
-        //return null;
-      }
+      getUndernames(activeAddress);
+    
     } catch (error) {
       console.log("Connect error:", error);
-      walletConnected = false;
+      arWalletConnected = false;
     }
   }
 
-  async function disconnectWallet() {
+  let metmaskConnected=$state(false)
+  let undernames=$state([]);
+  async function connectMetamask() {
+    try {
+      await window.ethereum.enabled();
+      metmaskConnected = true;
+      const ethereumActiveAddress=window.ethereum.selectedAddress;
+      activeAddress=getChecksumAddress(ethereumActiveAddress);
+      undernames=getUndernames(activeAddress);
+     
+    } catch (error) {
+      console.log("Connect error:", error);
+      arWalletConnected = false;
+    }
+  }
+
+  async function disconnectARWallet() {
     try {
       // 请求断开 ArConnect 钱包
       await window.arweaveWallet.disconnect();
-      walletConnected = false;
+      arWalletConnected = false;
     } catch (error) {
       console.error("Failed to disconnect from ArConnect wallet", error);
     }
@@ -183,8 +204,8 @@
 
 <div>
   <div style="text-align: center;">
-    {#if walletConnected}
-      <button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectWallet}
+    {#if arWalletConnected}
+      <button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectARWallet}
         >Disconnect</button
       >
     {:else}
@@ -193,7 +214,21 @@
         style="font-size: 14px; color:darkblue"
         type="button"
         class="btn btn-primary"
-        onclick={connectWallet}>Connect AR Wallet</button
+        onclick={connectARWallet}>Connect AR Wallet</button
+      >
+    {/if}
+
+    {#if arWalletConnected}
+      <button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectARWallet}
+        >Disconnect</button
+      >
+    {:else}
+      <button
+        title="Connect wallet to publish undername"
+        style="font-size: 14px; color:darkblue"
+        type="button"
+        class="btn btn-primary"
+        onclick={connectARWallet}>Connect Metamask</button
       >
     {/if}
   </div>
@@ -273,10 +308,10 @@
     <div class:hidden={underNameChanged || showAlphabetOnly}>
       <button
         class:hidden={!nameAvailable}
-        disabled={!walletConnected}
+        disabled={!arWalletConnected}
         onclick={publish}
         title="connect wallet to publish"
-        ><span class:hidden={!walletConnected}>Publish</span><span class:hidden={walletConnected}
+        ><span class:hidden={!arWalletConnected}>Publish</span><span class:hidden={arWalletConnected}
           >Connect Wallet Before Publishing</span
         >
       </button>
