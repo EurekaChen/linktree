@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect";
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
+    import { getChecksumAddress } from "$lib/etherAddress";
+    import { log } from "$lib/store/Debug";
 
   let gatewayDomainName = $state("ar.io");
   if (typeof window !== "undefined") {
@@ -83,6 +85,7 @@
        } else {
          //return null;
        }
+       return [];
      }
 
   let activeAddress;
@@ -107,11 +110,22 @@
   let undernames=$state([]);
   async function connectMetamask() {
     try {
-      await window.ethereum.enabled();
-      metmaskConnected = true;
-      const ethereumActiveAddress=window.ethereum.selectedAddress;
-      activeAddress=getChecksumAddress(ethereumActiveAddress);
-      undernames=getUndernames(activeAddress);
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+            // 请求用户的账户
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            console.log('Connected account:', accounts[0]);
+            metmaskConnected = true;
+            //const ethereumActiveAddress=window.ethereum.selectedAddress;
+            activeAddress=getChecksumAddress(accounts[0]);
+            log("checksum:",activeAddress);
+            undernames=await getUndernames(accounts[0]);           
+        } catch (error) {
+            console.error('User denied account access', error);
+        }
+    } else {
+        console.log('MetaMask is not installed');
+    }    
      
     } catch (error) {
       console.log("Connect error:", error);
@@ -205,30 +219,32 @@
 <div>
   <div style="text-align: center;">
     {#if arWalletConnected}
-      <button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectARWallet}
+      <button style="font-size: 14px; background-color:#ac9bff;padding:6px;border-radius:5px" type="button" onclick={disconnectARWallet}
         >Disconnect</button
       >
     {:else}
       <button
-        title="Connect wallet to publish undername"
-        style="font-size: 14px; color:darkblue"
+        title="Connect AR wallet to publish undername"
+        style="font-size: 14px;background-color:#ac9bff;padding:6px;border-radius:5px"
         type="button"
         class="btn btn-primary"
         onclick={connectARWallet}>Connect AR Wallet</button
       >
     {/if}
 
-    {#if arWalletConnected}
-      <button style="font-size: 14px; color:darkblue" type="button" onclick={disconnectARWallet}
-        >Disconnect</button
+    <span> | </span>
+
+    {#if metmaskConnected}
+      <button style="font-size: 14px; background-color:#e27624;padding:6px;border-radius:5px" type="button"
+        >Metamask Connected</button
       >
     {:else}
       <button
-        title="Connect wallet to publish undername"
-        style="font-size: 14px; color:darkblue"
+        title="Connect mestask wallet to publish undername"
+        style="font-size: 14px; background-color:#e27624;padding:6px;border-radius:5px"
         type="button"
         class="btn btn-primary"
-        onclick={connectARWallet}>Connect Metamask</button
+        onclick={connectMetamask}>Connect Metamask</button
       >
     {/if}
   </div>
