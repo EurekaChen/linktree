@@ -1,9 +1,19 @@
 <script>
   import { onMount } from "svelte";
   import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect";
+    import { getGatewayDomainName } from "$lib/getGatewayDomainName";
+
+  let gatewayDomainName = $state("ar.io");
+  if (typeof window !== "undefined") {
+    gatewayDomainName = getGatewayDomainName();
+  }
 
   let walletConnected = $state(false);
   let antWarning = $state(true);
+
+  let nameAvailable = $state(false);
+
+  let undername=$state("demo");
 
   let showAvialableCheck = $state(false);
   let showAlphabetOnly = $state(false);
@@ -14,6 +24,14 @@
   let isAoSending = $state(false);
   let showSuccess = $state(false);
   let showFail = $state(false);
+
+  let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
+  if (typeof window !== "undefined") {
+  let getlinktreeId = localStorage.getItem("linktreeId");
+  if (getlinktreeId) {
+    linktreeId = getlinktreeId;  
+  }
+}
 
   function onUnderNameChanged() {
     underNameChanged = true;
@@ -122,14 +140,7 @@
 
   onMount(async () => {
     //获取当前网关域名
-    gatewayDomainName = getGatewayDomainName();
-
-    //获取之前保存的数据
-    const storageData = localStorage.getItem("data");
-    console.log("获取到本地内存缓存数据", storageData);
-    if (storageData) {
-      data = JSON.parse(storageData);
-    }
+    gatewayDomainName = getGatewayDomainName();   
 
     //获取之前设置的undername
     const storageUndername = localStorage.getItem("undername");
@@ -139,8 +150,7 @@
 
     let getlinktreeId = localStorage.getItem("linktreeId");
     if (getlinktreeId) {
-      linktreeId = getlinktreeId;
-      showLinktreeId = true;
+      linktreeId = getlinktreeId;     
     }
 
     console.log(document.styleSheets);

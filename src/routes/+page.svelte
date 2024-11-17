@@ -1,151 +1,87 @@
 <script lang="ts">
   import PublishPanel from "$lib/component/PublishPanel.svelte";
+
   import preset from "./preset.json";
-  import { onMount } from "svelte"; 
-  //严重怀疑这个库问题导至刷新出错！！或者跟网络也有关系！一开始暂不导入
-  //import { ANT } from '@ar.io/sdk/web';
+  import defaultLinktree from "./defaultLinktree.json";
 
-  import { upload } from "$lib/upload";
   import { getGatewayDomainName } from "$lib/getGatewayDomainName";
+  import UploadPanel from "$lib/component/UploadPanel.svelte";
 
-  let isLogoEditing = $state(false);
-  let isLinkAdding = $state(false);
-
-  let isUploading = $state(false);
-  let showLinktreeId = $state(false);
-  let uploadFailed = $state(false);
-
-  let uploadEnabled = $state(false);
-
-  let isPublishUndername = $state(false);
-
-  let undername = $state("demo"); //onmount中改变
-  let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //demo
-  let nameAvailable = $state(false);
-
-  let defaultGatewayDomainName = "ar.io";
-
-  let defaultRoot = "https://linktree." + defaultGatewayDomainName;
-
-  let defaultIconRoot = defaultRoot + "/img/icon/";
-  //let defaultIconRoot = 'https://dl.eeurl.com/svg/icon/brand/';
-
-  //默认数据，没有保存时使用
-  let deaultData = {
-    title: "AR Link Tree",
-    logo: "https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780",
-    description:
-      "You can directly edit this page and permanently publish it to Arweave, then accessing your linktree page through the ArNS",
-    links: [
-      {
-        class: "default",
-        url: defaultRoot,
-        icon: defaultIconRoot + "generic-website.svg",
-        text: "Visit Website"
-      },
-      {
-        class: "github",
-        url: "https://github.com/eurekachen",
-        icon: defaultIconRoot + "github.svg",
-        text: "GitHub"
-      },
-      {
-        class: "pinterest",
-        url: "https://www.pinterest.com/eureka2093",
-        icon: defaultIconRoot + "pinterest.svg",
-        text: "Pinterest"
-      },
-      {
-        class: "discord",
-        url: "https://discord.com",
-        icon: defaultIconRoot + "discord.svg",
-        text: "Discord"
-      },
-      {
-        class: "linked",
-        url: "https://linkedin.com",
-        icon: defaultIconRoot + "linkedin.svg",
-        text: "LinkedIn"
-      }
-    ]
-  };
-
-  let gatewayDomainName = $state(defaultGatewayDomainName);
-  let data = $state(deaultData);
-  let iconRoot = $state(defaultIconRoot);
-  onMount(async () => {
-    //获取当前网关域名
+  //使用去中心化域名
+  let defaultGatewayDomainName = "ar.io"; //defaultLinktree中使用的域名
+  // svelte-ignore non_reactive_update
+  let gatewayDomainName = defaultGatewayDomainName;
+  if (typeof window !== "undefined") {
     gatewayDomainName = getGatewayDomainName();
+  }
 
-    //获取之前保存的数据
-    const storageData = localStorage.getItem("data");
-    console.log("获取到本地内存缓存数据", storageData);
-    if (storageData) {
-      data = JSON.parse(storageData);
+  //根据当前域名调整相关链接
+  let linktree = $state(defaultLinktree);
+  let defaultLinktreeJson = JSON.stringify(defaultLinktree);
+  let newDefaultLinktreeJson = defaultLinktreeJson.replace(
+    defaultGatewayDomainName,
+    gatewayDomainName
+  );
+  linktree = JSON.parse(newDefaultLinktreeJson);
+  let undername = $state("demo");
+  //如果有的话，使用之前保存的数据
+  if (typeof window !== "undefined") {
+    const storageLinktree = localStorage.getItem("linktree");
+    console.log("获取到本地内存缓存数据", storageLinktree);
+    if (storageLinktree) {
+      linktree = JSON.parse(storageLinktree);
     }
 
-    //获取之前设置的undername
+    //获取undername
+
     const storageUndername = localStorage.getItem("undername");
     if (storageUndername) {
       undername = storageUndername;
     }
+  }
 
-    let getlinktreeId = localStorage.getItem("linktreeId");
-    if (getlinktreeId) {
-      linktreeId = getlinktreeId;
-      showLinktreeId = true;
-    }
+  let root = "https://linktree." + gatewayDomainName;
 
-    console.log(document.styleSheets);
-  });
+  let isLogoEditing = $state(false);
+  let isLinkAdding = $state(false);
+
+  let isPublishUndername = $state(false);
 
   let selectedPreset = $state(preset[0]);
   let addLinkClass = $state(preset[0].buttonClass);
-  let addLinkIcon = $state(defaultIconRoot + preset[0].icon);
+  let addLinkIcon = $state(root + "/img/icon/" + preset[0].icon);
   let addLinkText = $state(preset[0].text);
-  let addLinkUrl = $state(defaultRoot);
+  let addLinkUrl = $state(root);
 
+  let uploadEnabled = $state(false);
+  //获取linktreeId
+  let showLinktreeId = $state(false);
   function save() {
-    localStorage.setItem("data", JSON.stringify(data));
+    localStorage.setItem("linktree", JSON.stringify(linktree));
     showLinktreeId = false;
     uploadEnabled = true;
-    console.log("saved:" + localStorage.getItem("data"));
+    console.log("saved:" + localStorage.getItem("linktree"));
   }
 
   function deleteLink(index: number) {
-    data.links.splice(index, 1);
+    linktree.links.splice(index, 1);
     save();
   }
 
   function onSelectChange() {
     addLinkClass = selectedPreset.buttonClass;
-    addLinkIcon = iconRoot + selectedPreset.icon;
+    addLinkIcon = root + "/img/icon/" + selectedPreset.icon;
     addLinkText = selectedPreset.text;
   }
 
   function addLink() {
     let item = { class: addLinkClass, icon: addLinkIcon, text: addLinkText, url: addLinkUrl };
-    data.links.push(item);
+    linktree.links.push(item);
     save();
-  }
-
-  async function turboUpload() {
-    isUploading = true;
-    showLinktreeId = false;
-    linktreeId = await upload();
-    if (linktreeId == "failed") {
-      isUploading = false;
-      uploadFailed = true;
-      showLinktreeId = false;
-    } else {
-      isUploading = false;
-      showLinktreeId = true;
-      localStorage.setItem("linktreeId", linktreeId);
-    }
   }
 </script>
 
-<img src={data.logo} class="avatar" srcset="{data.logo} 2x" alt={data.title} />
+<img src={linktree.logo} class="avatar" srcset="{linktree.logo} 2x" alt={linktree.title} />
 
 <span
   title="editlogo"
@@ -169,7 +105,7 @@
     type="text"
     placeholder="Enter Logo URL"
     title="you can upload your logo to arweave"
-    bind:value={data.logo}
+    bind:value={linktree.logo}
   />
   <span
     title="confirm"
@@ -192,14 +128,14 @@
   <h1
     style="display: inline;"
     contenteditable="true"
-    bind:textContent={data.title}
+    bind:textContent={linktree.title}
     onblur={save}
   ></h1>
 </div>
 <!--Description-->
-<p contenteditable="true" bind:textContent={data.description} onblur={save}></p>
+<p contenteditable="true" bind:textContent={linktree.description} onblur={save}></p>
 
-{#each data.links as link, index}
+{#each linktree.links as link, index}
   <a class="button button-{link.class}" href={link.url} target="_blank" rel="noopener" role="button"
     ><img class="icon" aria-hidden="true" src={link.icon} alt={link.text} />{link.text}</a
   >
@@ -292,20 +228,7 @@
   <br />
 </div>
 <hr />
-<button
-  disabled={!uploadEnabled}
-  title="Modify this page to active this button"
-  onclick={turboUpload}>Upload this linktree page to Arweave</button
->
-<p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>
-  Upload your linktree to Arweave...
-</p>
-<p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
-  Link Tree ID:{linktreeId}
-</p>
-<p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
-  Upload to Arweave Failed, try it layter.
-</p>
+<UploadPanel {showLinktreeId} {uploadEnabled} />
 <hr />
 <button
   class:hidden={isPublishUndername}
@@ -336,7 +259,7 @@
   <PublishPanel />
 </div>
 <hr />
-<div class:hidden={nameAvailable}>
+<div class:hidden={false}>
   <strong style="color:green">{undername} is ready! </strong> vist
   <code>
     <a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"

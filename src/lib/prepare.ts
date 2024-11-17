@@ -4,14 +4,14 @@ export function prepare() {
 	const gatewayDomainName = getGatewayDomainName;
 	const linktreeUrl = 'https://linktree' + '.' + gatewayDomainName();
 
-	const storageData = localStorage.getItem('data');
+	const storageData = localStorage.getItem("linktree");
 	if (!storageData) {
 		alert('你还没有填写任何数据');
 		return '';
 	}
 
 	const data = JSON.parse(storageData);
-	console.log('data', data);
+	console.log("linktree", data);
 
 	let result = `<!doctype html>
 <html lang="en">
