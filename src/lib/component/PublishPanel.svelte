@@ -4,6 +4,7 @@
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
     import { getChecksumAddress } from "$lib/etherAddress";
     import { log } from "$lib/store/Debug";
+    import { linktreeProcessId } from "$lib/constant";
 
     let gatewayDomainName = $state("ar.io");
     if (typeof window !== "undefined") {
@@ -16,7 +17,7 @@
     let nameAvailable = $state(false);
 
     let undername = $state("demo");
-
+    
     let showAvialableCheck = $state(false);
     let showAlphabetOnly = $state(false);
     let isChecking = $state(false);
@@ -88,7 +89,7 @@
         return [];
     }
 
-    let activeAddress;
+    let activeAddress=$state("");
     async function connectARWallet() {
         try {
             await window.arweaveWallet.connect(["ACCESS_ADDRESS", "ACCESS_PUBLIC_KEY", "SIGN_TRANSACTION"]);
@@ -140,6 +141,11 @@
         }
     }
 
+    async function disconnectMetamask() {
+       metmaskConnected=false;
+       undernames=[];
+    }
+
     async function publish() {
         //发到AO进行发布
 
@@ -170,22 +176,17 @@
         }
     }
 
-    onMount(async () => {
-        //获取当前网关域名
-        gatewayDomainName = getGatewayDomainName();
-
+    onMount(async () => {       
         //获取之前设置的undername
         const storageUndername = localStorage.getItem("undername");
         if (storageUndername) {
             undername = storageUndername;
         }
 
-        let getlinktreeId = localStorage.getItem("linktreeId");
-        if (getlinktreeId) {
-            linktreeId = getlinktreeId;
-        }
-
-        console.log(document.styleSheets);
+        let storageLinktreeId = localStorage.getItem("linktreeId");
+        if (storageLinktreeId) {
+            linktreeId = storageLinktreeId;
+        }        
 
         // 获取linktree记录信息
         //const io = IO.init();
@@ -197,7 +198,7 @@
             try {
                 const module = await import("@ar.io/sdk/web");
                 const ANT = module.ANT;
-                const ant = ANT.init({ processId: "gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk" });
+                const ant = ANT.init({ processId: linktreeProcessId });
                 const records = await ant.getRecords();
                 if (undername in records) {
                     nameAvailable = false;
@@ -220,12 +221,13 @@
                 <button
                     style="font-size: 14px; background-color:#ac9bff;padding:6px;border-radius:5px;border:1px solid gray"
                     type="button"
-                    onclick={disconnectARWallet}>Ar Wallet Connected</button>
+                    onclick={disconnectARWallet}>Disconnect Ar Wallet</button>
             {/if}
             {#if metmaskConnected}
                 <button
                     style="font-size: 14px; background-color:#e27624;padding:6px;border-radius:5px;border:1px solid gray"
-                    type="button">Metamask Connected</button>
+                    type="button" onclick={disconnectMetamask}
+                    >Disconnect Metamask </button>
             {/if}
         {:else}
             <button
@@ -251,6 +253,9 @@
                 onclick={connectMetamask}>Connect Solana</button>
         {/if}
     </div>
+    <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!walletConnected}>
+      Wallet Address: <code>{activeAddress}</code>
+     </p>
     <hr />
     <table style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
         <caption style="font-size: 14px;"><strong>Your undernames</strong></caption>
@@ -341,3 +346,10 @@
         Warning: ANT service is unvailable now, refresh or try it later.
     </div>
 </div>
+
+
+<style>
+  .hidden {
+      display: none;
+  } 
+</style>
