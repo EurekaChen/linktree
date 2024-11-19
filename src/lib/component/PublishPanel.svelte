@@ -48,6 +48,8 @@
         isChecking = true;
         showSuccess = false;
         showFail = false;
+        //详见："^(?:[a-zA-Z0-9_-]+|@)$" 参见：https://github.com/ar-io/ar-io-ant-process?tab=readme-ov-file#set-record
+        //另外txid："^[a-zA-Z0-9_-]{43}$"
         const regex = /^[a-z0-9-]+$/; // 允许字母和连字符
         let valid = regex.test(undername);
         if (valid) {
