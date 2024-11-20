@@ -238,7 +238,7 @@
                 <th>访问链接</th>
                 <th>可用性检测</th>
                 <th
-                    >检测耗时<button onclick={() => sortData("stake")}>
+                    >检测耗时<button onclick={() => sortData("delay")}>
                         {#if sortState.column === "delay"}
                             {#if sortState.asc}
                                 🔼
