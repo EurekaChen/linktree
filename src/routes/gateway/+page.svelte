@@ -198,8 +198,8 @@
     <table>
         <thead>
             <tr>
-                <th
-                    >网关FQDN(域名)
+                <th>
+                    网关FQDN(域名)
                     <button onclick={() => sortData("fqdn")}>
                         {#if sortState.column === "fqdn"}
                             {#if sortState.asc}
@@ -210,9 +210,10 @@
                         {:else}
                             ↕️
                         {/if}
-                    </button></th>
-                <th
-                    >加入时间 <button onclick={() => sortData("startTime")}>
+                    </button>
+                </th>
+                <th>
+                    加入时间 <button onclick={() => sortData("startTime")}>
                         {#if sortState.column === "startTime"}
                             {#if sortState.asc}
                                 🔼
@@ -222,9 +223,11 @@
                         {:else}
                             ↕️
                         {/if}
-                    </button></th>
-                <th
-                    >抵押(IO)<button onclick={() => sortData("stake")}>
+                    </button>
+                </th>
+                <th>
+                    抵押(IO)
+                    <button onclick={() => sortData("stake")}>
                         {#if sortState.column === "stake"}
                             {#if sortState.asc}
                                 🔼
@@ -234,11 +237,13 @@
                         {:else}
                             ↕️
                         {/if}
-                    </button></th>
+                    </button>
+                </th>
                 <th>访问链接</th>
                 <th>可用性检测</th>
-                <th
-                    >检测耗时<button onclick={() => sortData("delay")}>
+                <th>
+                    检测耗时
+                    <button onclick={() => sortData("delay")}>
                         {#if sortState.column === "delay"}
                             {#if sortState.asc}
                                 🔼
@@ -248,27 +253,32 @@
                         {:else}
                             ↕️
                         {/if}
-                    </button></th>
+                    </button>
+                </th>
             </tr>
         </thead>
         <tbody>
             {#each gateways as gateway}
                 <tr>
-                    <td title={gateway.label}
-                        ><a href="{gateway.protocol}://{gateway.fqdn}" target="_blank" rel="noopener noreferrer"
-                            >{gateway.fqdn}</a
-                        ></td>
+                    <td title={gateway.label}>
+                        <a href="{gateway.protocol}://{gateway.fqdn}" target="_blank" rel="noopener noreferrer">
+                            {gateway.fqdn}
+                        </a>
+                    </td>
                     <td>{gateway.startTime}</td>
                     <td>{gateway.stake}k</td>
-                    <td
-                        ><a
+                    <td>
+                        <a
                             href={gateway.protocol + "://" + domain + "." + gateway.fqdn}
                             target="_blank"
-                            rel="noopener noreferrer">点击打开</a
-                        ></td>
+                            rel="noopener noreferrer">
+                            点击打开
+                        </a>
+                    </td>
                     <td><button onclick={() => checkGateway(gateway)}>{@html gateway.state}</button></td>
-                    <td
-                        >{#if gateway.delay > 0}{gateway.delay}s{/if}</td>
+                    <td>
+                        {#if gateway.delay > 0}{gateway.delay}s{/if}
+                    </td>
                 </tr>
             {/each}
         </tbody>
@@ -278,8 +288,8 @@
     <table>
         <thead>
             <tr>
-                <th>网关FQDN(域名) </th>
-                <th>加入时间 </th>
+                <th>网关FQDN(域名)</th>
+                <th>加入时间</th>
                 <th>抵押(IO)</th>
             </tr>
         </thead>
