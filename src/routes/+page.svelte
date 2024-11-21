@@ -3,11 +3,13 @@
     import defaultLinktree from "./defaultLinktree.json";
 
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
-    import { defaultGatewayDomainName } from "$lib/constant";
+    import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
     import { log } from "$lib/store/Debug";
 
 	import UploadPanel from "$lib/component/UploadPanel.svelte";
     import PublishPanel from "$lib/component/PublishPanel.svelte";   
+
+    import { onMount } from "svelte";
 
     //使用去中心化域名   
     // svelte-ignore non_reactive_update
@@ -79,6 +81,32 @@
         linktree.links.push(item);
         save();
     }
+
+    let undernameReady=$state(false)   
+    onMount(async () => {       
+
+        // 获取linktree记录信息
+        //const io = IO.init();
+        //const record = await io.getArNSRecord({ name: 'linktree' });
+        //12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
+        //linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
+
+        (async () => {
+            try {
+                const module = await import("@ar.io/sdk/web");
+                const ANT = module.ANT;
+                const ant = ANT.init({ processId: linktreeAntId });
+                const records = await ant.getRecords();
+                if (undername in records) {
+                    undernameReady = true;
+                } else {
+                    undernameReady = false;
+                }               
+            } catch (error) {
+                console.error("导入失败ANT:", error);              
+            }
+        })();
+    });
 </script>
 
 <img src={linktree.logo} class="avatar" srcset="{linktree.logo} 2x" alt={linktree.title} />
@@ -114,9 +142,11 @@
         class:hidden={!isLogoEditing}
         onkeydown={() => {
             isLogoEditing = false;
+            uploadEnabled=true;
         }}
         onclick={() => {
             isLogoEditing = false;
+            uploadEnabled=true;
         }}>✓</span>
 </div>
 
@@ -224,10 +254,10 @@
             }}>
             ✖close</span>
     </div>
-    <PublishPanel />
+    <PublishPanel linktreeId />
 </div>
 <hr />
-<div class:hidden={false}>
+<div class:hidden={!undernameReady}>
     <strong style="color:green">{undername} is ready! </strong> vist
     <code>
         <a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"

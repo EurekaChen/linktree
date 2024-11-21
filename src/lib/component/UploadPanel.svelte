@@ -1,12 +1,12 @@
 <script>
   import { upload } from "$lib/upload";
 
-  let { uploadEnabled, showLinktreeId } = $props();
+  let { uploadEnabled, showLinktreeId,linktreeId } = $props();
 
   let isUploading = $state(false);
   let uploadFailed = $state(false);
 
-  let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
+  //let linktreeId = $state("4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y"); //这是demo的id
 
   //查看缓存中是否有lintreeId
   if (typeof window !== "undefined") {
@@ -20,6 +20,7 @@
   async function turboUpload() {
     isUploading = true;
     showLinktreeId = false;
+    uploadFailed=false;
     linktreeId = await upload();
     if (linktreeId == "failed") {
       //上传失败
