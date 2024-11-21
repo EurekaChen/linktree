@@ -1,4 +1,4 @@
-<script lang="ts"> 
+<script lang="ts">
     import preset from "./preset.json";
     import defaultLinktree from "./defaultLinktree.json";
 
@@ -6,18 +6,18 @@
     import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
     import { log } from "$lib/store/Debug";
 
-	import UploadPanel from "$lib/component/UploadPanel.svelte";
-    import PublishPanel from "$lib/component/PublishPanel.svelte";   
+    import UploadPanel from "$lib/component/UploadPanel.svelte";
+    import PublishPanel from "$lib/component/PublishPanel.svelte";
 
     import { onMount } from "svelte";
 
-    //使用去中心化域名   
+    //使用去中心化域名
     // svelte-ignore non_reactive_update
     let gatewayDomainName = defaultGatewayDomainName;
     if (typeof window !== "undefined") {
         gatewayDomainName = getGatewayDomainName();
     }
-	log("当前网关：",gatewayDomainName);
+    log("当前网关：", gatewayDomainName);
 
     //根据当前域名调整相关链接
     let linktree = $state(defaultLinktree);
@@ -41,6 +41,8 @@
         }
     }
 
+    let linktreeId = $state("Get linktree Id by upload page to arweave"); //这是demo的id,4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
+
     let root = "https://linktree." + gatewayDomainName;
 
     let isLogoEditing = $state(false);
@@ -61,7 +63,7 @@
         localStorage.setItem("linktree", JSON.stringify(linktree));
         showLinktreeId = false;
         uploadEnabled = true;
-		localStorage.removeItem("linktreeId");
+        localStorage.removeItem("linktreeId");
         log("保存新的linktree,并移除旧的linktreeId");
     }
 
@@ -82,9 +84,8 @@
         save();
     }
 
-    let undernameReady=$state(false)   
-    onMount(async () => {       
-
+    let undernameReady = $state(false);
+    onMount(async () => {
         // 获取linktree记录信息
         //const io = IO.init();
         //const record = await io.getArNSRecord({ name: 'linktree' });
@@ -101,9 +102,9 @@
                     undernameReady = true;
                 } else {
                     undernameReady = false;
-                }               
+                }
             } catch (error) {
-                console.error("导入失败ANT:", error);              
+                console.error("导入失败ANT:", error);
             }
         })();
     });
@@ -123,7 +124,9 @@
     }}
     onclick={() => {
         isLogoEditing = true;
-    }}>🖉</span>
+    }}>
+    🖉
+</span>
 <div style="font-size: 14px;" class:hidden={!isLogoEditing}>
     <label for="class">Enter Logo Url</label>
     <input
@@ -142,12 +145,14 @@
         class:hidden={!isLogoEditing}
         onkeydown={() => {
             isLogoEditing = false;
-            uploadEnabled=true;
+            uploadEnabled = true;
         }}
         onclick={() => {
             isLogoEditing = false;
-            uploadEnabled=true;
-        }}>✓</span>
+            uploadEnabled = true;
+        }}>
+        ✓
+    </span>
 </div>
 
 <!-- Title -->
@@ -158,15 +163,19 @@
 <p contenteditable="true" bind:textContent={linktree.description} onblur={save}></p>
 
 {#each linktree.links as link, index}
-    <a class="button button-{link.class}" href={link.url} target="_blank" rel="noopener" role="button"
-        ><img class="icon" aria-hidden="true" src={link.icon} alt={link.text} />{link.text}</a>
+    <a class="button button-{link.class}" href={link.url} target="_blank" rel="noopener" role="button">
+        <img class="icon" aria-hidden="true" src={link.icon} alt={link.text} />
+        {link.text}
+    </a>
     <span
         title="delete"
         role="button"
         tabindex="0"
         onkeydown={() => deleteLink(index)}
         style="color:red;vertical-align:super"
-        onclick={() => deleteLink(index)}>✖</span>
+        onclick={() => deleteLink(index)}>
+        ✖
+    </span>
 {/each}
 
 <hr />
@@ -174,7 +183,9 @@
     class:hidden={isLinkAdding}
     onclick={() => {
         isLinkAdding = true;
-    }}>+ Add Custom Link</button>
+    }}>
+    + Add Custom Link
+</button>
 <br />
 
 <div style="border:1px solid gray;padding:8px; background-color:#e3f2fd;border-radius:4px" class:hidden={!isLinkAdding}>
@@ -188,7 +199,8 @@
             onclick={() => {
                 isLinkAdding = false;
             }}>
-            ✖close</span>
+            ✖close
+        </span>
     </div>
     <br />
     <div>
@@ -223,20 +235,24 @@
         <input class="form-control" type="text" placeholder="Enter Your Link URL" bind:value={addLinkUrl} />
     </div>
 
-    <a class="button button-{addLinkClass}" href={addLinkUrl} target="_blank" rel="noopener" role="button"
-        ><img class="icon" aria-hidden="true" src={addLinkIcon} alt="" />{addLinkText}</a>
+    <a class="button button-{addLinkClass}" href={addLinkUrl} target="_blank" rel="noopener" role="button">
+        <img class="icon" aria-hidden="true" src={addLinkIcon} alt="" />
+        {addLinkText}
+    </a>
     <br />
     <button type="submit" onclick={addLink}>Add Link</button>
     <br />
 </div>
 <hr />
-<UploadPanel {showLinktreeId} {uploadEnabled} />
+<UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} />
 <hr />
 <button
     class:hidden={isPublishUndername}
     onclick={() => {
         isPublishUndername = true;
-    }}>Publish Undername</button>
+    }}>
+    Publish Undername
+</button>
 <br />
 
 <div
@@ -252,17 +268,20 @@
             onclick={() => {
                 isPublishUndername = false;
             }}>
-            ✖close</span>
+            ✖close
+        </span>
     </div>
-    <PublishPanel linktreeId />
+    <PublishPanel {linktreeId} />
 </div>
 <hr />
 <div class:hidden={!undernameReady}>
-    <strong style="color:green">{undername} is ready! </strong> vist
+    <strong style="color:green">{undername} is ready!</strong>
+    vist
     <code>
-        <a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}"
-            >https://{undername}_linktree.{gatewayDomainName}</a
-        ></code>
+        <a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}">
+            https://{undername}_linktree.{gatewayDomainName}
+        </a>
+    </code>
     or
     <code><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a></code>
 </div>

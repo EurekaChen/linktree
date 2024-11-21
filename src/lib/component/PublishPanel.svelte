@@ -336,7 +336,7 @@
                     bind:value={linktreeId}
                     disabled={!enableCustomId}
                     />
-                <button onclick={()=>{enableCustomId=true}} title="You can input your custom txid from arweave">Customize</button>
+                <button onclick={()=>{enableCustomId=true}} title="You can input your custom txid from arweave" class:hidden={enableCustomId}>Customize</button>
             </div>
             <div>
                 <label for="custom_text">UnderName</label>

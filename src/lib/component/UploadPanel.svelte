@@ -1,7 +1,7 @@
 <script>
   import { upload } from "$lib/upload";
 
-  let { uploadEnabled, showLinktreeId,linktreeId } = $props();
+  let { uploadEnabled=$bindable(), showLinktreeId=$bindable(), linktreeId= $bindable() } = $props();
 
   let isUploading = $state(false);
   let uploadFailed = $state(false);
