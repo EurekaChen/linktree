@@ -183,14 +183,17 @@
             signer: createDataItemSigner(window.arweaveWallet),
             data: "linktree"
         });
-        console.log("toAoMsgId:", msgId);
+        log("toAoMsgId:", msgId);
 
         const readResult = await result({ message: msgId, process: linktreeProcessId });
-        let reply = readResult.Messages[0].Data;
+        log("result:",readResult);
+        let reply = readResult.Messages[1].Data;
+        log("reply:",reply);
         isAoSending = false;
         if (reply == "success") {
             showSuccess = true;
             showFail = false;
+            await getUndernames(activeAddress);
         } else {
             showFail = true;
             showSuccess = false;
@@ -292,7 +295,7 @@
     {#if undernames.length > 0}
         <table
             style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
-            <caption style="font-size: 14px;"><strong>Your undernames</strong></caption>
+            <caption style="font-size: 14px;"><strong>Your undernames</strong> (Max 5 Free)</caption>
             <thead>
                 <tr style="background:#f5f5f5">
                     <th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
@@ -392,7 +395,8 @@
                     </p>
                     <p style="color:darkgreen" class:hidden={!showSuccess}>
                         <!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
-                        It will take some time to resolve the undername until it takes effect. Please visit your linktree
+                        <strong>Congratulations！your undername has been successfully published.</strong>
+                        It may take some time to resolve the undername until it takes effect. Please visit your linktree
                         (https://{undername}_linktree.{gatewayDomainName}) or check the results on this page later.
                     </p>
                 </div>
