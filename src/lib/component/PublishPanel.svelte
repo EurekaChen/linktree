@@ -171,6 +171,40 @@
         undernames = [];
     }
 
+    let isRemoving=$state(false);
+    async function removeUndername(undername:string) {
+        isRemoving = true;
+        const  { createDataItemSigner,  message, result }= await import("@permaweb/aoconnect");
+
+        let signer;
+        if(metmaskConnected){
+            signer = createEthereumSigner() as any;
+        }
+        if(arWalletConnected){
+            signer=createDataItemSigner(window.arweaveWallet);
+        }
+
+        const msgId = await message({
+            process: linktreeProcessId,
+            tags: [
+                { name: "Action", value: "RemoveUndername" },
+                { name: "Undername", value: undername }                
+            ],
+            signer: signer,
+            data: "linktree"
+        });
+        log("removeMsgId:", msgId);
+
+        const readResult = await result({ message: msgId, process: linktreeProcessId });
+        log("result:",readResult);
+        let reply = readResult.Messages[1].Data;
+        log("reply:",reply); 
+        await getUndernames(activeAddress);
+
+        isRemoving = false;                  
+
+    }
+
     async function publish() {
         //发到AO进行发布
 
@@ -323,11 +357,14 @@
                         <td style="padding:4px;border:1px solid #ddd"><a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">{undername.undername}</a></td>
                         <td style="padding:4px;border:1px solid #ddd">{undername.target}</td>
                         <td style="padding:4px;border:1px solid #ddd">🖉</td>
-                        <td style="padding:4px;border:1px solid #ddd">✖</td>
+                        <td style="padding:4px;border:1px solid #ddd"><button onclick={()=>removeUndername(undername.undername)}>✖</button></td>
                     </tr>
                 {/each}
             </tbody>
         </table>
+        {#if isRemoving}
+        <div>removing undername, waiting...</div>       
+        {/if}
     {:else if !walletConnected}
         <div>Connect wallet to fetch your undernames.</div>
     {:else if isFetchingUndername}
