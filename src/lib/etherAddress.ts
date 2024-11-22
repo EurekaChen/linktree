@@ -2,8 +2,8 @@ import isString from 'lodash/isString';
 import { isAddress } from '@ethersproject/address';
 import { ethers } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
-import { createData } from 'arseeding-arbundles';
-import { InjectedEthereumSigner } from 'arseeding-arbundles/src/signing';
+//import { createData } from 'arseeding-arbundles';
+//import { InjectedEthereumSigner } from 'arseeding-arbundles/src/signing';
 
 export const isEthereumAddress = isAddress;
 
@@ -27,12 +27,15 @@ export function createEthereumSigner() {
 	}) {
 		// 创建 Web3Provider 和 InjectedEthereumSigner 实例
 		const provider = new Web3Provider(window.ethereum);
+
+		const  {InjectedEthereumSigner}= await import('arseeding-arbundles/src/signing');
 		const signer = new InjectedEthereumSigner(provider);
 
 		// 设置公钥
 		await signer.setPublicKey();
 
 		// 创建数据项
+		const  {createData}= await import('arseeding-arbundles');
 		const dataItem = createData(data, signer, { tags, target, anchor });
 
 		// 签署数据项

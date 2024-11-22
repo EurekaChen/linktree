@@ -3,7 +3,7 @@
     import defaultLinktree from "./defaultLinktree.json";
 
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
-    import { defaultGatewayDomainName } from "$lib/constant";
+    import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
     import { log } from "$lib/store/Debug";
 
     import UploadPanel from "$lib/component/UploadPanel.svelte";
@@ -88,27 +88,27 @@
 
     let undernameReady = $state(false);
     onMount(async () => {
-        // 获取linktree记录信息
+        //获取linktree记录信息
         //const io = IO.init();
         //const record = await io.getArNSRecord({ name: 'linktree' });
         //12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
         //linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
-        // (async () => {
-        //     try {
-        //         const module = await import("@ar.io/sdk/web");
-        //         const ANT = module.ANT;
-        //         const ant = ANT.init({ processId: linktreeAntId });
-        //         const records = await ant.getRecords();
-        //         if (undername in records) {
-        //             undernameReady = true;
-        //         } else {
-        //             undernameReady = false;
-        //         }
-        //     } catch (error) {
-        //         console.error("导入失败ANT:", error);
-        //     }
-        // })();
+        (async () => {
+            try {
+                const module = await import("@ar.io/sdk/web");
+                const ANT = module.ANT;
+                const ant = ANT.init({ processId: linktreeAntId });
+                const records = await ant.getRecords();
+                if (undername in records) {
+                    undernameReady = true;
+                } else {
+                    undernameReady = false;
+                }
+            } catch (error) {
+                console.error("导入失败ANT:", error);
+            }
+        })();
     });
 </script>
 

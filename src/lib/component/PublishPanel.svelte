@@ -320,7 +320,7 @@
             <tbody>
                 {#each undernames as undername}
                     <tr>
-                        <td style="padding:4px;border:1px solid #ddd">{undername.undername}</td>
+                        <td style="padding:4px;border:1px solid #ddd"><a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">{undername.undername}</a></td>
                         <td style="padding:4px;border:1px solid #ddd">{undername.target}</td>
                         <td style="padding:4px;border:1px solid #ddd">🖉</td>
                         <td style="padding:4px;border:1px solid #ddd">✖</td>
@@ -346,7 +346,7 @@
                 <label for="custom_text">Linktree Id</label>
                 <input
                     type="text"
-                    style="width: 350px;margin-bottom:5px"
+                    style="width: 350px;margin-bottom:5px;font-size:12px"
                     id="custom_text"
                     placeholder="Enter you Linktree Id"
                     bind:value={linktreeId}
