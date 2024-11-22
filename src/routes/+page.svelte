@@ -3,10 +3,10 @@
     import defaultLinktree from "./defaultLinktree.json";
 
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
-    import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
+    import { defaultGatewayDomainName } from "$lib/constant";
     import { log } from "$lib/store/Debug";
 
-    //import UploadPanel from "$lib/component/UploadPanel.svelte";
+    import UploadPanel from "$lib/component/UploadPanel.svelte";
     import PublishPanel from "$lib/component/PublishPanel.svelte";
 
     import { onMount } from "svelte";
@@ -246,7 +246,7 @@
     <br />
 </div>
 <hr />
-<!-- <UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} /> -->
+<UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} />
 <hr />
 <button
     class:hidden={isPublishUndername}
@@ -273,7 +273,7 @@
             ✖close
         </span>
     </div>
-    <!-- <PublishPanel {linktreeId} /> -->
+    <PublishPanel {linktreeId} />
 </div>
 <hr />
 <div class:hidden={!undernameReady}>

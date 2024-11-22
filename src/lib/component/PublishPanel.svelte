@@ -6,6 +6,7 @@
     import { getChecksumAddress } from "$lib/etherAddress";
     import { log } from "$lib/store/Debug";
     import { linktreeAntId, linktreeProcessId } from "$lib/constant";
+    import { createEthereumSigner } from "$lib/etherAddress";
 
     let { linktreeId } = $props();
 
@@ -141,7 +142,7 @@
                     //const ethereumActiveAddress=window.ethereum.selectedAddress;
                     activeAddress = getChecksumAddress(accounts[0]);
                     log("checksum:", activeAddress);
-                    await getUndernames(accounts[0]);
+                    await getUndernames(activeAddress);
                 } catch (error) {
                     console.error("User denied account access", error);
                 }
@@ -176,6 +177,15 @@
         showPublish = true;
         isAoSending = true;
         const  { createDataItemSigner,  message, result }= await import("@permaweb/aoconnect");
+
+        let signer;
+        if(metmaskConnected){
+            signer = createEthereumSigner() as any;
+        }
+        if(arWalletConnected){
+            signer=createDataItemSigner(window.arweaveWallet);
+        }
+
         const msgId = await message({
             process: linktreeProcessId,
             tags: [
@@ -183,7 +193,7 @@
                 { name: "Undername", value: undername },
                 { name: "Target", value: linktreeId }
             ],
-            signer: createDataItemSigner(window.arweaveWallet),
+            signer: signer,
             data: "linktree"
         });
         log("toAoMsgId:", msgId);
@@ -396,12 +406,14 @@
                         <!--AO处理过程中遇到问题，请稍候再试-->
                         We encountered an issue during the AO processing. Please try again later.
                     </p>
-                    <p style="color:darkgreen" class:hidden={!showSuccess}>
+                    <div style="color:darkgreen" class:hidden={!showSuccess}>
                         <!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
-                        <strong>Congratulations！your undername has been successfully published.</strong>
+                        <div><strong>Congratulations！your undername has been successfully published.</strong></div>
+                        <p>
                         It may take some time to resolve the undername until it takes effect. Please visit your linktree
                         (https://{undername}_linktree.{gatewayDomainName}) or check the results on this page later.
-                    </p>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
