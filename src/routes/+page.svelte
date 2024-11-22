@@ -29,6 +29,23 @@
     linktree = JSON.parse(newDefaultLinktreeJson);
     let undername = $state("demo");
     if (typeof window !== "undefined") {
+        (async () => {
+            const params = new URLSearchParams(window.location.search);
+            const forkUndername = params.get("fork"); //?fork=eureka
+            if (forkUndername) {
+                const forkUrl = "https://" + forkUndername + "_linktree." + gatewayDomainName;
+                const response = await fetch(forkUrl);
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, "text/html");
+                const jsonElement = doc.getElementById("linktreeJson");
+                if (jsonElement?.textContent) {
+                    linktree = JSON.parse(jsonElement.textContent);
+                    localStorage.setItem("linktree", jsonElement.textContent);
+                }
+            }
+        })();
+
         //获取之前保存的linktree
         const storageLinktree = localStorage.getItem("linktree");
         console.log("获取到本地内存缓存数据", storageLinktree);
@@ -246,7 +263,7 @@
     <br />
 </div>
 <hr />
-<UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} />
+<UploadPanel bind:showLinktreeId bind:uploadEnabled bind:linktreeId />
 <hr />
 <button
     class:hidden={isPublishUndername}

@@ -1,9 +1,10 @@
 //import Arweave from "arweave";
-import { prepare } from "./prepare";
+//import { prepare } from "./prepare";
+import { prepareWithJson } from "./prepareWithJson";
 import { log } from "./store/Debug";
 
 export async function upload() {
-    const fileContent = prepare();
+    const fileContent = prepareWithJson();
     try {
         const {default:Arweave} = await import('arweave');
         const arweave = new Arweave({});

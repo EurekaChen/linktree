@@ -25,21 +25,21 @@
     let showAvialableResult = $state(false);
     let isCharValid = $state(false);
 
-    let isUndernameValid=$derived(nameAvailable&&isCharValid)
-    let isLinktreeIdValid=$state(false);
+    let isUndernameValid = $derived(nameAvailable && isCharValid);
+    let isLinktreeIdValid = $state(false);
 
-    let isChecking = $state(false);  
+    let isChecking = $state(false);
 
     let showPublish = $state(false);
     let isAoSending = $state(false);
     let showSuccess = $state(false);
     let showFail = $state(false);
 
-    let checked=$state(false);
+    let checked = $state(false);
 
     //let linktreeId = $state("Get linktree Id by upload to arweave"); //这是demo的id,4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
 
-    let enableCustomId=$state(false);
+    let enableCustomId = $state(false);
 
     if (typeof window !== "undefined") {
         let getlinktreeId = localStorage.getItem("linktreeId");
@@ -48,26 +48,24 @@
         }
     }
 
-
     function onUnderNameChanged() {
-       
         isChecking = false;
         showAvialableResult = false;
         isCharValid = false;
         nameAvailable = false;
-        checked=false;
+        checked = false;
 
-        isLinktreeIdValid=false;
+        isLinktreeIdValid = false;
     }
 
     async function checkName() {
         //点击检测相当于默认修改了名称
-        onUnderNameChanged();   
-        
-        const idRegex=/^[a-zA-Z0-9_-]+$/;
-        isLinktreeIdValid = (linktreeId.length==43 && idRegex.test(linktreeId));     
+        onUnderNameChanged();
 
-        isChecking=true;
+        const idRegex = /^[a-zA-Z0-9_-]+$/;
+        isLinktreeIdValid = linktreeId.length == 43 && idRegex.test(linktreeId);
+
+        isChecking = true;
 
         showSuccess = false;
         showFail = false;
@@ -88,15 +86,15 @@
                 localStorage.setItem("undername", undername);
             }
             showAvialableResult = true;
-        } 
-        isChecking = false;    
-        checked=true;   
+        }
+        isChecking = false;
+        checked = true;
     }
 
     let isFetchingUndername = $state(false);
     async function getUndernames(activeAddress: string) {
         isFetchingUndername = true;
-        const {dryrun}= await import("@permaweb/aoconnect");
+        const { dryrun } = await import("@permaweb/aoconnect");
         let getPlayerMsg = await dryrun({
             process: linktreeProcessId,
             tags: [{ name: "Action", value: "GetUndernames" }],
@@ -128,7 +126,7 @@
 
     let walletConnected = $derived(metmaskConnected || arWalletConnected);
 
-    let canPublish=$derived(isUndernameValid&&walletConnected)
+    let canPublish = $derived(isUndernameValid && walletConnected);
 
     let undernames = $state([]);
     async function connectMetamask() {
@@ -171,24 +169,24 @@
         undernames = [];
     }
 
-    let isRemoving=$state(false);
-    async function removeUndername(undername:string) {
+    let isRemoving = $state(false);
+    async function removeUndername(undername: string) {
         isRemoving = true;
-        const  { createDataItemSigner,  message, result }= await import("@permaweb/aoconnect");
+        const { createDataItemSigner, message, result } = await import("@permaweb/aoconnect");
 
         let signer;
-        if(metmaskConnected){
+        if (metmaskConnected) {
             signer = createEthereumSigner() as any;
         }
-        if(arWalletConnected){
-            signer=createDataItemSigner(window.arweaveWallet);
+        if (arWalletConnected) {
+            signer = createDataItemSigner(window.arweaveWallet);
         }
 
         const msgId = await message({
             process: linktreeProcessId,
             tags: [
                 { name: "Action", value: "RemoveUndername" },
-                { name: "Undername", value: undername }                
+                { name: "Undername", value: undername }
             ],
             signer: signer,
             data: "linktree"
@@ -196,28 +194,28 @@
         log("removeMsgId:", msgId);
 
         const readResult = await result({ message: msgId, process: linktreeProcessId });
-        log("result:",readResult);
+        log("result:", readResult);
         let reply = readResult.Messages[1].Data;
-        log("reply:",reply); 
+        log("reply:", reply);
         await getUndernames(activeAddress);
 
-        isRemoving = false;                  
-
+        isRemoving = false;
     }
 
+    let fialMsg=$state("");
     async function publish() {
         //发到AO进行发布
 
         showPublish = true;
         isAoSending = true;
-        const  { createDataItemSigner,  message, result }= await import("@permaweb/aoconnect");
+        const { createDataItemSigner, message, result } = await import("@permaweb/aoconnect");
 
         let signer;
-        if(metmaskConnected){
+        if (metmaskConnected) {
             signer = createEthereumSigner() as any;
         }
-        if(arWalletConnected){
-            signer=createDataItemSigner(window.arweaveWallet);
+        if (arWalletConnected) {
+            signer = createDataItemSigner(window.arweaveWallet);
         }
 
         const msgId = await message({
@@ -233,18 +231,35 @@
         log("toAoMsgId:", msgId);
 
         const readResult = await result({ message: msgId, process: linktreeProcessId });
-        log("result:",readResult);
-        let reply = readResult.Messages[1].Data;
-        log("reply:",reply);
+        log("result:", readResult);
+        let reply;
+        if(readResult.Messages.length==1)
+        {
+             reply = readResult.Messages[0].Data;
+        }
+        else{
+            reply = readResult.Messages[1].Data;
+        }
+        log("reply:", reply);
         isAoSending = false;
         if (reply == "success") {
             showSuccess = true;
             showFail = false;
             await getUndernames(activeAddress);
-        } else {
+        } else if (reply == "exceed5") {
+            fialMsg="Maximum 5 free undernames allowed.";
             showFail = true;
             showSuccess = false;
+        } else if (reply == "exist") {
+            fialMsg="The undername is exist. Please try again later.";
+            showFail = true;
+            showSuccess=false;
+        } else {
+            fialMsg="We encountered an issue during the AO processing. Please try again later.";
+            showFail = true;
+            showSuccess = false;            
         }
+        nameAvailable=false;
     }
 
     onMount(async () => {
@@ -342,28 +357,45 @@
     {#if undernames.length > 0}
         <table
             style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
-            <caption style="font-size: 14px;"><strong>Your undernames</strong> (Max 5 Free)</caption>
+            <caption style="font-size: 14px;">
+                <strong>Your undernames</strong>
+                 (Max 5 Free)
+            </caption>
             <thead>
                 <tr style="background:#f5f5f5">
                     <th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
                     <th style="padding:4px;text-align:center;border:1px solid #ddd">Linktree Id</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Edit</th>
+                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Fork</th>
                     <th style="padding:4px;text-align:center;border:1px solid #ddd">Delete</th>
                 </tr>
             </thead>
             <tbody>
                 {#each undernames as undername}
                     <tr>
-                        <td style="padding:4px;border:1px solid #ddd"><a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">{undername.undername}</a></td>
+                        <td style="padding:4px;border:1px solid #ddd">
+                            <a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">
+                                {undername.undername}
+                            </a>
+                        </td>
                         <td style="padding:4px;border:1px solid #ddd">{undername.target}</td>
-                        <td style="padding:4px;border:1px solid #ddd">🖉</td>
-                        <td style="padding:4px;border:1px solid #ddd"><button onclick={()=>removeUndername(undername.undername)}>✖</button></td>
+                        <td style="padding:4px;border:1px solid #ddd">
+                            <button>
+                                <a
+                                    href="https://linktree.{gatewayDomainName}?fork={undername.undername}"
+                                    style="text-decoration:none">
+                                    🖉
+                                </a>
+                            </button>
+                        </td>
+                        <td style="padding:4px;border:1px solid #ddd">
+                            <button onclick={() => removeUndername(undername.undername)}>✖</button>
+                        </td>
                     </tr>
                 {/each}
             </tbody>
         </table>
         {#if isRemoving}
-        <div>removing undername, waiting...</div>       
+            <div>removing undername, waiting...</div>
         {/if}
     {:else if !walletConnected}
         <div>Connect wallet to fetch your undernames.</div>
@@ -387,9 +419,15 @@
                     id="custom_text"
                     placeholder="Enter you Linktree Id"
                     bind:value={linktreeId}
-                    disabled={!enableCustomId}
-                    />
-                <button onclick={()=>{enableCustomId=true}} title="You can input your custom txid from arweave" class:hidden={enableCustomId}>Customize</button>
+                    disabled={!enableCustomId} />
+                <button
+                    onclick={() => {
+                        enableCustomId = true;
+                    }}
+                    title="You can input your custom txid from arweave"
+                    class:hidden={enableCustomId}>
+                    Customize
+                </button>
             </div>
             <div>
                 <label for="custom_text">UnderName</label>
@@ -400,21 +438,23 @@
                     placeholder="Enter you undername"
                     bind:value={undername}
                     onkeydown={onUnderNameChanged} />
-                <button onclick={checkName}>Check Validity</button>     
+                <button onclick={checkName}>Check Validity</button>
 
                 <span style="font-size:12px;color:coral" class:hidden={!isChecking}>🛑 checking</span>
-                
+
                 {#if checked}
-                <span style="font-size:12px" class:hidden={!showAvialableResult}>
-                    <span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
-                        ✔ {undername} is available
+                    <span style="font-size:12px" class:hidden={!showAvialableResult}>
+                        <span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
+                            ✔ {undername} is available
+                        </span>
+                        <span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
+                            ✖ {undername} is taken
+                        </span>
                     </span>
-                    <span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
-                        ✖ {undername} is taken
+                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>⚠invalid character</span>
+                    <span style="font-size:12px;color:darkred" class:hidden={isLinktreeIdValid}>
+                        ⚠invalid Linktree Id
                     </span>
-                </span>
-                <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>⚠invalid character</span>
-                <span style="font-size:12px;color:darkred" class:hidden={isLinktreeIdValid}>⚠invalid Linktree Id</span>
                 {/if}
             </div>
             <div style="font-size:12px;color:darkgreen">
@@ -423,16 +463,16 @@
                 <code>{undername}_linktree.{gatewayDomainName}</code>
             </div>
             <div>
-                <button  disabled={!canPublish}  onclick={publish}         >
+                <button disabled={!canPublish} onclick={publish}>
                     {#if walletConnected}
-                        {#if isUndernameValid }
-                        <span>Publish {undername}</span>
+                        {#if isUndernameValid}
+                            <span>Publish {undername}</span>
                         {:else}
-                        <span>Check Validity Before Publishing</span>
+                            <span>Check Validity Before Publishing</span>
                         {/if}
                     {:else}
                         <span>Connect Wallet Before Publishing</span>
-                    {/if}                    
+                    {/if}
                 </button>
                 <div class:hidden={!showPublish}>
                     <p style="color:darkblue" class:hidden={!isAoSending}>
@@ -441,14 +481,15 @@
                     </p>
                     <p style="color:darkorange" class:hidden={!showFail}>
                         <!--AO处理过程中遇到问题，请稍候再试-->
-                        We encountered an issue during the AO processing. Please try again later.
+                        {fialMsg}
                     </p>
                     <div style="color:darkgreen" class:hidden={!showSuccess}>
                         <!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
                         <div><strong>Congratulations！your undername has been successfully published.</strong></div>
                         <p>
-                        It may take some time to resolve the undername until it takes effect. Please visit your linktree
-                        (https://{undername}_linktree.{gatewayDomainName}) or check the results on this page later.
+                            It may take some time to resolve the undername until it takes effect. Please visit your
+                            linktree (https://{undername}_linktree.{gatewayDomainName}) or check the results on this
+                            page later.
                         </p>
                     </div>
                 </div>
