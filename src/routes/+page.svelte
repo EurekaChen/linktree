@@ -6,10 +6,12 @@
     import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
     import { log } from "$lib/store/Debug";
 
-    import UploadPanel from "$lib/component/UploadPanel.svelte";
+    //import UploadPanel from "$lib/component/UploadPanel.svelte";
     import PublishPanel from "$lib/component/PublishPanel.svelte";
 
     import { onMount } from "svelte";
+
+    log("Start");
 
     //使用去中心化域名
     // svelte-ignore non_reactive_update
@@ -92,21 +94,21 @@
         //12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
         //linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
 
-        (async () => {
-            try {
-                const module = await import("@ar.io/sdk/web");
-                const ANT = module.ANT;
-                const ant = ANT.init({ processId: linktreeAntId });
-                const records = await ant.getRecords();
-                if (undername in records) {
-                    undernameReady = true;
-                } else {
-                    undernameReady = false;
-                }
-            } catch (error) {
-                console.error("导入失败ANT:", error);
-            }
-        })();
+        // (async () => {
+        //     try {
+        //         const module = await import("@ar.io/sdk/web");
+        //         const ANT = module.ANT;
+        //         const ant = ANT.init({ processId: linktreeAntId });
+        //         const records = await ant.getRecords();
+        //         if (undername in records) {
+        //             undernameReady = true;
+        //         } else {
+        //             undernameReady = false;
+        //         }
+        //     } catch (error) {
+        //         console.error("导入失败ANT:", error);
+        //     }
+        // })();
     });
 </script>
 
@@ -244,7 +246,7 @@
     <br />
 </div>
 <hr />
-<UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} />
+<!-- <UploadPanel bind:showLinktreeId={showLinktreeId} bind:uploadEnabled={uploadEnabled} bind:linktreeId={linktreeId} /> -->
 <hr />
 <button
     class:hidden={isPublishUndername}
@@ -271,7 +273,7 @@
             ✖close
         </span>
     </div>
-    <PublishPanel {linktreeId} />
+    <!-- <PublishPanel {linktreeId} /> -->
 </div>
 <hr />
 <div class:hidden={!undernameReady}>

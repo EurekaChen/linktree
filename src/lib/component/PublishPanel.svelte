@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect";
+    //AR生态个个包都有slice问题，所它也移到代码中
+    //import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect";
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
     import { getChecksumAddress } from "$lib/etherAddress";
     import { log } from "$lib/store/Debug";
@@ -94,6 +95,7 @@
     let isFetchingUndername = $state(false);
     async function getUndernames(activeAddress: string) {
         isFetchingUndername = true;
+        const {dryrun}= await import("@permaweb/aoconnect");
         let getPlayerMsg = await dryrun({
             process: linktreeProcessId,
             tags: [{ name: "Action", value: "GetUndernames" }],
@@ -173,6 +175,7 @@
 
         showPublish = true;
         isAoSending = true;
+        const  { createDataItemSigner,  message, result }= await import("@permaweb/aoconnect");
         const msgId = await message({
             process: linktreeProcessId,
             tags: [

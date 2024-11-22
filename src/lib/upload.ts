@@ -1,10 +1,11 @@
-import Arweave from "arweave";
+//import Arweave from "arweave";
 import { prepare } from "./prepare";
 import { log } from "./store/Debug";
 
 export async function upload() {
     const fileContent = prepare();
     try {
+        const {default:Arweave} = await import('arweave');
         const arweave = new Arweave({});
         const jwk = await arweave.wallets.generate();
         const { TurboFactory, developmentTurboConfiguration } = await import("@ardrive/turbo-sdk/web");
