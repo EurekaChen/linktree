@@ -25,8 +25,9 @@
 
     let showAvialableResult = $state(false);
     let isCharValid = $state(false);
+    let isAtLeast3 = $state(false);
 
-    let isUndernameValid = $derived(nameAvailable && isCharValid);
+    let isUndernameValid = $derived(nameAvailable && isCharValid && isAtLeast3);
     let isLinktreeIdValid = $state(false);
 
     let isChecking = $state(false);
@@ -53,6 +54,7 @@
         isChecking = false;
         showAvialableResult = false;
         isCharValid = false;
+        isAtLeast3 = false;
         nameAvailable = false;
         checked = false;
 
@@ -70,11 +72,14 @@
 
         showSuccess = false;
         showFail = false;
+
+        isAtLeast3 = undername.length > 2 ? true : false;
+
         //详见："^(?:[a-zA-Z0-9_-]+|@)$" 参见：https://github.com/ar-io/ar-io-ant-process?tab=readme-ov-file#set-record
         //另外txid："^[a-zA-Z0-9_-]{43}$"
         const regex = /^[a-z0-9_-]+$/; // 允许小写字母和连字符
         isCharValid = regex.test(undername);
-        if (isCharValid && isLinktreeIdValid) {
+        if (isAtLeast3 && isCharValid && isLinktreeIdValid) {
             //检查是否可用
             showAvialableResult = false;
             const { ANT } = await import("@ar.io/sdk/web");
@@ -161,7 +166,7 @@
             arWalletConnected = false;
             undernames = [];
         } catch (error) {
-            console.error($t("publish.failedArconnect"),error);
+            console.error($t("publish.failedArconnect"), error);
         }
     }
 
@@ -203,7 +208,7 @@
         isRemoving = false;
     }
 
-    let fialMsg=$state("");
+    let fialMsg = $state("");
     async function publish() {
         //发到AO进行发布
 
@@ -234,39 +239,37 @@
         const readResult = await result({ message: msgId, process: linktreeProcessId });
         log("result:", readResult);
         let reply;
-        if(readResult.Messages.length==1)
-        {
-             reply = readResult.Messages[0].Data;
-        }
-        else{
+        if (readResult.Messages.length == 1) {
+            reply = readResult.Messages[0].Data;
+        } else {
             reply = readResult.Messages[1].Data;
         }
         log("reply:", reply);
         isAoSending = false;
+       
         if (reply == "success") {
             showSuccess = true;
             showFail = false;
             await getUndernames(activeAddress);
         } else if (reply == "exceed5") {
-            fialMsg=$t("publish.max5Allowed");
+            fialMsg = $t("publish.max5Allowed");
             showFail = true;
             showSuccess = false;
-        } else if(reply=="exceed2char")
-        {
-            fialMsg=$t("publish.charGreaterThan2");
-            showFail=true;
-            showSuccess=false;    
-        }
-        else if (reply == "exist") {
-            fialMsg=$t("publish.nameExist");
+        } else if (reply == "exceed2char") {
+            fialMsg = $t("publish.charGreaterThan2");
             showFail = true;
-            showSuccess=false;
+            showSuccess = false;
+        } else if (reply == "exist") {
+            fialMsg = $t("publish.nameExist");
+            showFail = true;
+            showSuccess = false;
         } else {
-            fialMsg=$t("publish.aoIssue");
+            fialMsg = $t("publish.aoIssue");
             showFail = true;
-            showSuccess = false;            
+            showSuccess = false;
         }
-        nameAvailable=false;
+       
+        //nameAvailable = false;
     }
 
     onMount(async () => {
@@ -357,7 +360,8 @@
         {/if}
     </div>
     <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!walletConnected}>
-        {$t("publish.walletAddress")} <code>{activeAddress}</code>
+        {$t("publish.walletAddress")}
+        <code>{activeAddress}</code>
     </p>
     <hr />
 
@@ -365,8 +369,8 @@
         <table
             style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
             <caption style="font-size: 14px;">
-                <strong> {$t("publish.yourUndernames")}</strong>
-                 ({$t("publish.max5Free")})
+                <strong>{$t("publish.yourUndernames")}</strong>
+                ({$t("publish.max5Free")})
             </caption>
             <thead>
                 <tr style="background:#f5f5f5">
@@ -405,9 +409,9 @@
             <div>{$t("publish.removing")}</div>
         {/if}
     {:else if !walletConnected}
-        <div></div>
-    {:else if isFetchingUndername}
         <div>{$t("publish.connectToFetch")}</div>
+    {:else if isFetchingUndername}
+        <div>{$t("publish.isFetchingUndername")}</div>
     {:else}
         <div>{$t("publish.noSubmitted")}</div>
     {/if}
@@ -452,20 +456,28 @@
                 {#if checked}
                     <span style="font-size:12px" class:hidden={!showAvialableResult}>
                         <span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
-                            ✔ {undername} {$t("publish.isAvailable")}
+                            ✔ {undername}
+                            {$t("publish.isAvailable")}
                         </span>
                         <span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
-                            ✖ {undername} {$t("publish.isTaken")}
+                            ✖ {undername}
+                            {$t("publish.isTaken")}
                         </span>
                     </span>
-                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>⚠{$t("publish.invalidChar")}</span>
+                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>
+                        ⚠{$t("publish.invalidChar")}
+                    </span>
+                    <span style="font-size:12px;color:darkred" class:hidden={isAtLeast3}>
+                        ⚠{$t("publish.atLeast3")}
+                    </span>
                     <span style="font-size:12px;color:darkred" class:hidden={isLinktreeIdValid}>
                         ⚠{$t("publish.invalidLinktreeId")}
                     </span>
                 {/if}
             </div>
             <div style="font-size:12px;color:darkgreen">
-                {$t("publish.publish")} <code>{linktreeId}</code>
+                {$t("publish.publish")}
+                <code>{linktreeId}</code>
                 {$t("publish.to")}
                 <code>{undername}_linktree.{gatewayDomainName}</code>
             </div>
@@ -473,12 +485,12 @@
                 <button disabled={!canPublish} onclick={publish}>
                     {#if walletConnected}
                         {#if isUndernameValid}
-                            <span>{$t("publish.isTaken")} {undername}</span>
+                            <span>{$t("publish.publish")} {undername}</span>
                         {:else}
                             <span>{$t("publish.checkBefore")}</span>
                         {/if}
                     {:else}
-                        <span>{$t("publish.checkBefore")}</span>
+                        <span>{$t("publish.connectBefore")}</span>
                     {/if}
                 </button>
                 <div class:hidden={!showPublish}>
@@ -486,7 +498,7 @@
                         <!--正在发往AO处理域名解析事项...-->
                         {$t("publish.sendingToAO")}
                     </p>
-                    <p style="color:darkorange" class:hidden={!showFail}>                       
+                    <p style="color:darkorange" class:hidden={!showFail}>
                         {fialMsg}
                     </p>
                     <div style="color:darkgreen" class:hidden={!showSuccess}>
