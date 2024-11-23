@@ -75,20 +75,20 @@ export default {
             note: "Note: It may take some time to resolve the undername until it takes effect. Please visit your linktree page later."
         },
         gateway: {
-			gatewayAvailabilityCheck: "Gateway Availability Check",
+			gatewayAvailabilityCheck: "Gateway Checker",
 			byGateway: "You can also access through gateways in the table below",
 			check: "Check",
 			checking: "Checking...",
-			gatewayOk: "<span>✅Gateway Normal</span>",
+			gatewayOk: "<span>✅Normal</span>",
 			gatewayError: "<span>⚠Gateway Error</span>",
-			visitOk: "<span>✅Access Normal</span>",
+			visitOk: "<span>✅accessible</span>",
 			unknownError: "Unknown Error",
-			gatewayFail: "❌Gateway Failed",
+			gatewayFail: "❌Failed",
 			stopChecking: "Stop Gateway Availability Check",
 			checkAll: "Check All Gateway Availability",
-			totalJoined: "Current Online Gateway Total:",
+			totalJoined: "Online Total:",
 			delayNote: "First visit may take longer",
-			checkCount: "Completed Gateway Check Count:",
+			checkCount: "Checked Count:",
 			fqdn: "FQDN(Domain)",
 			joinDate: "Join Date",
 			stakeIO: "Stake(IO)",
@@ -100,7 +100,7 @@ export default {
 			leavingCount: "Number of Leaving Gateways:",
 			loadingGateways: "Loading Gateways Data...",
 			loadingFailed: "Failed to Load Gateways Data",
-			erroInfo: "Error Info"
+			errorInfo: "Error Info"
 		}
     },
 
@@ -205,7 +205,7 @@ export default {
             leavingCount: "退出网关数量：",
             loadingGateways: "正在加载网关数据...",
             loadingFailed: "加载网关数据失败",
-            erroInfo: "错误信息"
+            errorInfo: "错误信息"
         }
     }
 };

@@ -5,7 +5,8 @@
 
     let domain = "hello_linktree";
     let isChecking = $state(false);
-    let title = $state($t("gateway.gatewayAvailabilityCheck"));
+    //let title = $state($t("gateway.gatewayAvailabilityCheck"));
+    let title=""; //$t("gateway.gatewayAvailabilityCheck");
     let description = $state("");
 
     let namePattern = /^(?:[a-zA-Z0-9_-]+)$/; //名称允许字符，字母和连字符和下划线（来自ar.iob除去@)
@@ -189,7 +190,7 @@
     srcset="https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780 2x"
     alt="Gateways" />
 <div style="font-size: 14px;">
-    <span role="img" aria-label="Choose Language">🌐{$t("chooseLanguge")}</span>
+    <span role="img" aria-label="Choose Language">🌐{$t("chooseLanguage")}</span>
     <select bind:value={$locale} style="margin-bottom: 0px;">
         {#each $locales as value}
             <option {value}>{$t(`lang.${value}`)}</option>
@@ -197,13 +198,13 @@
     </select>
 </div>
 
-<h1>{title}</h1>
+<h2>{title} {$t("gateway.gatewayAvailabilityCheck")}</h2>
 
 {#if gateways.length > 0}
-    <p>{@html description}</p>
+    <!-- <p>{@html description}</p> -->
     <button onclick={checkGateways}>{isChecking ? $t("gateway.stopChecking") : $t("gateway.checkAll")}</button>
     <p style="font-size:14px">
-        <span>{$t("gateway.totalJoined")} {gateways.length} ({$t("gateway.delayNote")})</span>
+        <span>{$t("gateway.totalJoined")} <strong> {gateways.length} </strong> ({$t("gateway.delayNote")})</span>
         <span class:hidden={!isChecking}>
             {$t("gateway.checkCount")}
             <strong>{checked}</strong>
@@ -322,9 +323,9 @@
         </tbody>
     </table>
 {:else if !isIOError}
-    <h2>{$t("gateway.loadingGateways")}</h2>
+    <h3>{$t("gateway.loadingGateways")}</h3>
 {:else}
-    <h2>{$t("gateway.loadingFailed")}</h2>
+    <h3>{$t("gateway.loadingFailed")}</h3>
     <p>
         {$t("gateway.errorInfo")}
         <code>
