@@ -36,14 +36,18 @@
             const forkUndername = params.get("fork"); //?fork=eureka
             if (forkUndername) {
                 const forkUrl = "https://" + forkUndername + "_linktree." + gatewayDomainName;
-                const response = await fetch(forkUrl);
-                const htmlText = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, "text/html");
-                const jsonElement = doc.getElementById("linktreeJson");
-                if (jsonElement?.textContent) {
-                    linktree = JSON.parse(jsonElement.textContent);
-                    localStorage.setItem("linktree", jsonElement.textContent);
+                try {
+                    const response = await fetch(forkUrl);
+                    const htmlText = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, "text/html");
+                    const jsonElement = doc.getElementById("linktreeJson");
+                    if (jsonElement?.textContent) {
+                        linktree = JSON.parse(jsonElement.textContent);
+                        localStorage.setItem("linktree", jsonElement.textContent);
+                    }
+                } catch (error) {
+                    log("fork error:", error);
                 }
             }
         })();
@@ -69,8 +73,6 @@
     let isLogoEditing = $state(false);
     let isLinkAdding = $state(false);
 
-    let isPublishUndername = $state(false);
-
     let selectedPreset = $state(preset[0]);
     let addLinkClass = $state(preset[0].buttonClass);
     let addLinkIcon = $state(root + "/img/icon/" + preset[0].icon);
@@ -79,6 +81,8 @@
 
     let uploadEnabled = $state(false);
     let showLinktreeId = $state(false);
+
+    let isPublishUndername = $state(false);
 
     function save() {
         localStorage.setItem("linktree", JSON.stringify(linktree));
@@ -107,12 +111,6 @@
 
     let undernameReady = $state(false);
     onMount(async () => {
-        //获取linktree记录信息
-        //const io = IO.init();
-        //const record = await io.getArNSRecord({ name: 'linktree' });
-        //12345678:vDeH1apk0WMyMFCBH1W76D2-8tZG2hstwFNZJqYZUGA
-        //linktree:gJKH_MlxgDI3j912HdppmuJnqzsSvo3nRuvb5PVPxOk
-
         (async () => {
             try {
                 const module = await import("@ar.io/sdk/web");
@@ -296,7 +294,9 @@
         </a>
     </code>
     {$t("main.or")}
-    <code><a style="text-decoration: none;" href="/gateway?undername={undername}">{$t("main.moreDomainNames")}</a></code>
+    <code>
+        <a style="text-decoration: none;" href="/gateway?undername={undername}">{$t("main.moreDomainNames")}</a>
+    </code>
 </div>
 <hr />
 <div style="font-size: 14px;">

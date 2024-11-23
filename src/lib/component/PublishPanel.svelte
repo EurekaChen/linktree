@@ -39,8 +39,6 @@
 
     let checked = $state(false);
 
-    //let linktreeId = $state("Get linktree Id by upload to arweave"); //这是demo的id,4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
-
     let enableCustomId = $state(false);
 
     if (typeof window !== "undefined") {
@@ -134,14 +132,18 @@
 
     let canPublish = $derived(isUndernameValid && walletConnected);
 
-    let undernames = $state([]);
+    interface Undername {
+        undername: string;
+        target: string;
+    }
+    let undernames = $state<Undername[]>([]);
     async function connectMetamask() {
         try {
             if (typeof window.ethereum !== "undefined") {
                 try {
                     // 请求用户的账户
                     const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-                    console.log("Connected account:", accounts[0]);
+                    log("Connected account:", accounts[0]);
                     metmaskConnected = true;
                     //const ethereumActiveAddress=window.ethereum.selectedAddress;
                     activeAddress = getChecksumAddress(accounts[0]);
@@ -151,10 +153,10 @@
                     console.error("User denied account access", error);
                 }
             } else {
-                console.log("MetaMask is not installed");
+                log("MetaMask is not installed");
             }
         } catch (error) {
-            console.log("Connect error:", error);
+            log("Connect error:", error);
             arWalletConnected = false;
         }
     }
@@ -210,8 +212,6 @@
 
     let fialMsg = $state("");
     async function publish() {
-        //发到AO进行发布
-
         showPublish = true;
         isAoSending = true;
         const { createDataItemSigner, message, result } = await import("@permaweb/aoconnect");
@@ -246,7 +246,7 @@
         }
         log("reply:", reply);
         isAoSending = false;
-       
+
         if (reply == "success") {
             showSuccess = true;
             showFail = false;
@@ -268,7 +268,7 @@
             showFail = true;
             showSuccess = false;
         }
-       
+
         //nameAvailable = false;
     }
 
@@ -494,15 +494,13 @@
                     {/if}
                 </button>
                 <div class:hidden={!showPublish}>
-                    <p style="color:darkblue" class:hidden={!isAoSending}>
-                        <!--正在发往AO处理域名解析事项...-->
+                    <p style="color:darkblue" class:hidden={!isAoSending}>                      
                         {$t("publish.sendingToAO")}
                     </p>
                     <p style="color:darkorange" class:hidden={!showFail}>
                         {fialMsg}
                     </p>
-                    <div style="color:darkgreen" class:hidden={!showSuccess}>
-                        <!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
+                    <div style="color:darkgreen" class:hidden={!showSuccess}>                       
                         <div><strong>{$t("publish.congratulations")}</strong></div>
                         <p>
                             {$t("publish.note")}

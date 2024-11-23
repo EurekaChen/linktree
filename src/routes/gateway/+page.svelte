@@ -9,7 +9,7 @@
     let title=""; //$t("gateway.gatewayAvailabilityCheck");
     let description = $state("");
 
-    let namePattern = /^(?:[a-zA-Z0-9_-]+)$/; //名称允许字符，字母和连字符和下划线（来自ar.iob除去@)
+    const namePattern = /^(?:[a-zA-Z0-9_-]+)$/; //名称允许字符，字母和连字符和下划线（来自ar.iob除去@)
 
     if (typeof window !== "undefined") {
         const params = new URLSearchParams(window.location.search);
@@ -210,7 +210,7 @@
             <strong>{checked}</strong>
         </span>
     </p>
-    <table>
+    <table aria-label="Gateway List">
         <thead>
             <tr>
                 <th>
@@ -304,7 +304,7 @@
         {$t("gateway.leavingCount")}
         <strong>{leavingGateways.length}</strong>
     </p>
-    <table>
+    <table aria-label="Leaving Gateway List">
         <thead>
             <tr>
                 <th>{$t("gateway.fqdn")}</th>
@@ -315,7 +315,8 @@
         <tbody>
             {#each leavingGateways as gateway}
                 <tr>
-                    <td title={gateway.label}><a href="{gateway.protocol}://{gateway.fqdn}">{gateway.fqdn}</a></td>
+                    <td title={gateway.label}><a href="{gateway.protocol}://{gateway.fqdn}" rel="noopener noreferrer" 
+                        target="_blank">{gateway.fqdn}</a></td>
                     <td>{gateway.startTime}</td>
                     <td>{gateway.stake}</td>
                 </tr>
