@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { t, locales, locale } from "$lib/i18n"
+    import { t, locales, locale } from "$lib/i18n";
     import { log } from "$lib/store/Debug";
     import { onMount } from "svelte";
 
     let domain = "hello_linktree";
     let isChecking = $state(false);
-    let title = $state("ar.io网关可用性检测");
+    let title = $state($t("gateway.gatewayAvailabilityCheck"));
     let description = $state("");
 
     let namePattern = /^(?:[a-zA-Z0-9_-]+)$/; //名称允许字符，字母和连字符和下划线（来自ar.iob除去@)
@@ -18,7 +18,8 @@
             title = undername;
             domain = undername + "_linktree";
             description =
-                '您还可以通过下表中的网关访问到<code><a href="https://' +
+                $t("gateway.byGateway") +
+                '<code><a href="https://' +
                 domain +
                 ".ar.io" +
                 '">' +
@@ -31,7 +32,8 @@
             title = name;
             domain = name;
             description =
-                '您还可以通过下表中的网关访问到<code><a href="https://' +
+                $t("gateway.byGateway") +
+                '<code><a href="https://' +
                 domain +
                 ".ar.io" +
                 '">' +
@@ -95,7 +97,7 @@
                         stake: Math.round(item.operatorStake / 10000000) / 100,
                         status: item.status,
                         startTime: new Date(item.startTimestamp).toLocaleDateString(),
-                        state: "检测",
+                        state: $t("gateway.check"),
                         delay: 0
                     };
                     gateways.push(gateway);
@@ -116,7 +118,7 @@
     let checked = $state(0);
     async function checkGateways() {
         isChecking = !isChecking;
-        checked = 1;
+        checked = 0;
         for (let gateway of gateways) {
             if (!isChecking) return;
             await checkGateway(gateway);
@@ -125,7 +127,7 @@
     }
 
     async function checkGateway(gateway: Gateway) {
-        gateway.state = "检测中...";
+        gateway.state = $t("gateway.checking");
         const startTime = performance.now();
         try {
             let url = gateway.protocol + "://" + domain + "." + gateway.fqdn;
@@ -135,19 +137,19 @@
                     const fetchText = await response.text(); // 将响应体解析为文本返回
                     const matched = fetchText == helloText;
                     if (matched) {
-                        gateway.state = '<span title="正确获取Hello, Eureka World!">✅网关正常</span>';
+                        gateway.state = $t("gateway.gatewayOk");
                     } else {
-                        gateway.state = '<span title="不能正确获取Hello, Eureka World!">⚠网关异常</span>';
+                        gateway.state = $t("gateway.gatewayOk");
                     }
                 } else {
-                    gateway.state = '<span title="能正常访问' + url + '">✅访问正常</span>';
+                    gateway.state = $t("gateway.visitOk");
                 }
             } else {
-                gateway.state = '<span title="访问' + url + '出错">' + "✅" + response.status + "错误</span>";
+                gateway.state = "<span>" + "✅" + response.status + "</span>";
             }
         } catch (error) {
-            let errorMsg: string = error instanceof Error ? error.message : "未知错误";
-            gateway.state = '<span  title="' + errorMsg + '">❌网关出错</span>';
+            let errorMsg: string = error instanceof Error ? error.message : $t("gateway.unknownError");
+            gateway.state = '<span  title="' + errorMsg + '">' + $t("gateway.gatewayFail") + "</span>";
         }
 
         const endTime = performance.now();
@@ -186,29 +188,32 @@
     class="avatar"
     srcset="https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780 2x"
     alt="Gateways" />
-    <div style="font-size: 14px;">
-        <span role="img" aria-label="Choose Language" >🌐Choose Languge</span>
-        <select bind:value={$locale} style="margin-bottom: 0px;">
-            {#each $locales as value}
-                <option {value}>{$t(`lang.${value}`)}</option>
-            {/each}
-        </select>
-    </div>
+<div style="font-size: 14px;">
+    <span role="img" aria-label="Choose Language">🌐{$t("chooseLanguge")}</span>
+    <select bind:value={$locale} style="margin-bottom: 0px;">
+        {#each $locales as value}
+            <option {value}>{$t(`lang.${value}`)}</option>
+        {/each}
+    </select>
+</div>
 
 <h1>{title}</h1>
 
 {#if gateways.length > 0}
     <p>{@html description}</p>
-    <button onclick={checkGateways}>{isChecking ? "停止网关可用性检测" : "测试所有网关可用性"}</button>
+    <button onclick={checkGateways}>{isChecking ? $t("gateway.stopChecking") : $t("gateway.checkAll")}</button>
     <p style="font-size:14px">
-        <span>共有{gateways.length}个网关加入中(首次访问耗时较多)</span>
-        <span class:hidden={!isChecking}>正在检测第{checked}个网关的可有性</span>
+        <span>{$t("gateway.totalJoined")} {gateways.length} ({$t("gateway.delayNote")})</span>
+        <span class:hidden={!isChecking}>
+            {$t("gateway.checkCount")}
+            <strong>{checked}</strong>
+        </span>
     </p>
     <table>
         <thead>
             <tr>
                 <th>
-                    网关FQDN(域名)
+                    {$t("gateway.fqdn")}
                     <button onclick={() => sortData("fqdn")}>
                         {#if sortState.column === "fqdn"}
                             {#if sortState.asc}
@@ -222,7 +227,8 @@
                     </button>
                 </th>
                 <th>
-                    加入时间 <button onclick={() => sortData("startTime")}>
+                    {$t("gateway.joinDate")}
+                    <button onclick={() => sortData("startTime")}>
                         {#if sortState.column === "startTime"}
                             {#if sortState.asc}
                                 🔼
@@ -235,7 +241,7 @@
                     </button>
                 </th>
                 <th>
-                    抵押(IO)
+                    {$t("gateway.stakeIO")}
                     <button onclick={() => sortData("stake")}>
                         {#if sortState.column === "stake"}
                             {#if sortState.asc}
@@ -248,10 +254,10 @@
                         {/if}
                     </button>
                 </th>
-                <th>访问链接</th>
-                <th>可用性检测</th>
+                <th>{$t("gateway.visitLink")}</th>
+                <th>{$t("gateway.availabilityCheck")}</th>
                 <th>
-                    检测耗时
+                    {$t("gateway.checkDelay")}
                     <button onclick={() => sortData("delay")}>
                         {#if sortState.column === "delay"}
                             {#if sortState.asc}
@@ -281,7 +287,7 @@
                             href={gateway.protocol + "://" + domain + "." + gateway.fqdn}
                             target="_blank"
                             rel="noopener noreferrer">
-                            点击打开
+                            {$t("gateway.clickVisit")}
                         </a>
                     </td>
                     <td><button onclick={() => checkGateway(gateway)}>{@html gateway.state}</button></td>
@@ -292,14 +298,17 @@
             {/each}
         </tbody>
     </table>
-    <h2>已退出网关</h2>
-    <p>共有{leavingGateways.length}个网关已经退出</p>
+    <h2>{$t("gateway.leavingGateway")}</h2>
+    <p>
+        {$t("gateway.leavingCount")}
+        <strong>{leavingGateways.length}</strong>
+    </p>
     <table>
         <thead>
             <tr>
-                <th>网关FQDN(域名)</th>
-                <th>加入时间</th>
-                <th>抵押(IO)</th>
+                <th>{$t("gateway.fqdn")}</th>
+                <th>{$t("gateway.joinDate")}</th>
+                <th>{$t("gateway.stakeIO")}</th>
             </tr>
         </thead>
         <tbody>
@@ -313,11 +322,11 @@
         </tbody>
     </table>
 {:else if !isIOError}
-    <h2>正在加载网关数据...</h2>
+    <h2>{$t("gateway.loadingGateways")}</h2>
 {:else}
-    <h2>加载网关数据失败</h2>
+    <h2>{$t("gateway.loadingFailed")}</h2>
     <p>
-        错误信息:
+        {$t("gateway.errorInfo")}
         <code>
             {ioError}
         </code>

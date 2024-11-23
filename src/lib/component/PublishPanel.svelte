@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { t } from "$lib/i18n";
     //AR生态个个包都有slice问题，所它也移到代码中
     //import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect";
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
@@ -160,7 +161,7 @@
             arWalletConnected = false;
             undernames = [];
         } catch (error) {
-            console.error("Failed to disconnect from ArConnect wallet", error);
+            console.error($t("publish.failedArconnect"),error);
         }
     }
 
@@ -247,15 +248,21 @@
             showFail = false;
             await getUndernames(activeAddress);
         } else if (reply == "exceed5") {
-            fialMsg="Maximum 5 free undernames allowed.";
+            fialMsg=$t("publish.max5Allowed");
             showFail = true;
             showSuccess = false;
-        } else if (reply == "exist") {
-            fialMsg="The undername is exist. Please try again later.";
+        } else if(reply=="exceed2char")
+        {
+            fialMsg=$t("publish.charGreaterThan2");
+            showFail=true;
+            showSuccess=false;    
+        }
+        else if (reply == "exist") {
+            fialMsg=$t("publish.nameExist");
             showFail = true;
             showSuccess=false;
         } else {
-            fialMsg="We encountered an issue during the AO processing. Please try again later.";
+            fialMsg=$t("publish.aoIssue");
             showFail = true;
             showSuccess = false;            
         }
@@ -293,7 +300,7 @@
                 }
                 antWarning = false;
             } catch (error) {
-                console.error("导入失败ANT:", error);
+                console.error("ANT Error:", error);
                 antWarning = true;
             }
         })();
@@ -308,7 +315,7 @@
                     style="font-size: 14px; background-color:#ac9bff;padding:6px;border-radius:5px;border:1px solid gray"
                     type="button"
                     onclick={disconnectARWallet}>
-                    Disconnect Ar Wallet
+                    {$t("publish.disconnectAr")}
                 </button>
             {/if}
             {#if metmaskConnected}
@@ -316,41 +323,41 @@
                     style="font-size: 14px; background-color:#e27624;padding:6px;border-radius:5px;border:1px solid gray"
                     type="button"
                     onclick={disconnectMetamask}>
-                    Disconnect Metamask
+                    {$t("publish.disconnectMetamask")}
                 </button>
             {/if}
         {:else}
             <button
-                title="Connect AR wallet to publish undername"
+                title={$t("publish.connectArTo")}
                 style="font-size: 14px;background-color:#ac9bff;padding:6px;border-radius:5px;border:1px solid gray"
                 type="button"
                 onclick={connectARWallet}>
-                Connect AR Wallet
+                {$t("publish.connectAr")}
             </button>
 
             <span>|</span>
 
             <button
-                title="Connect mestask wallet to publish undername"
+                title={$t("publish.connectMetamask")}
                 style="font-size: 14px; background-color:#e27624;padding:6px;border-radius:5px;border:1px solid gray"
                 type="button"
                 onclick={connectMetamask}>
-                Connect Metamask
+                {$t("publish.connectMetamask")}
             </button>
 
             <span>|</span>
             <button
-                title="Coming soon"
+                title={$t("publish.commingSoon")}
                 style="font-size: 14px; background-color:#ccc;padding:6px;border-radius:5px;border:1px solid gray"
                 type="button"
                 disabled
                 onclick={connectMetamask}>
-                Connect Solana
+                {$t("publish.connectSolana")}
             </button>
         {/if}
     </div>
     <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!walletConnected}>
-        Wallet Address: <code>{activeAddress}</code>
+        {$t("publish.walletAddress")} <code>{activeAddress}</code>
     </p>
     <hr />
 
@@ -358,15 +365,15 @@
         <table
             style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
             <caption style="font-size: 14px;">
-                <strong>Your undernames</strong>
-                 (Max 5 Free)
+                <strong> {$t("publish.yourUndernames")}</strong>
+                 ({$t("publish.max5Free")})
             </caption>
             <thead>
                 <tr style="background:#f5f5f5">
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Undername</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Linktree Id</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Fork</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">Delete</th>
+                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.undername")}</th>
+                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.linktreeId")}</th>
+                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.fork")}</th>
+                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.delete")}</th>
                 </tr>
             </thead>
             <tbody>
@@ -395,101 +402,98 @@
             </tbody>
         </table>
         {#if isRemoving}
-            <div>removing undername, waiting...</div>
+            <div>{$t("publish.removing")}</div>
         {/if}
     {:else if !walletConnected}
-        <div>Connect wallet to fetch your undernames.</div>
+        <div></div>
     {:else if isFetchingUndername}
-        <div>Fetching your undernames...</div>
+        <div>{$t("publish.connectToFetch")}</div>
     {:else}
-        <div>You have not submitted any undername yet.</div>
+        <div>{$t("publish.noSubmitted")}</div>
     {/if}
     <hr />
-    <div style="font-size: 14px; font-weight:bolder">Publish new undername</div>
+    <div style="font-size: 14px; font-weight:bolder">{$t("publish.publishNew")}</div>
 
     {#if antWarning}
-        <div style="color:orangered;margin:10px">Warning: ANT service is unvailable now, refresh or try it later.</div>
+        <div style="color:orangered;margin:10px">{$t("publish.antWarning")}</div>
     {:else}
         <div style="background-color: #bbdefb;padding:10px; font-size:14px">
             <div>
-                <label for="custom_text">Linktree Id</label>
+                <label for="custom_text">{$t("publish.linktreeId")}</label>
                 <input
                     type="text"
                     style="width: 350px;margin-bottom:5px;font-size:12px"
                     id="custom_text"
-                    placeholder="Enter you Linktree Id"
+                    placeholder={$t("publish.enterYourId")}
                     bind:value={linktreeId}
                     disabled={!enableCustomId} />
                 <button
                     onclick={() => {
                         enableCustomId = true;
                     }}
-                    title="You can input your custom txid from arweave"
+                    title={$t("publish.inputTxid")}
                     class:hidden={enableCustomId}>
-                    Customize
+                    {$t("publish.customize")}
                 </button>
             </div>
             <div>
-                <label for="custom_text">UnderName</label>
+                <label for="custom_text">{$t("publish.undername")}</label>
                 <input
                     type="text"
                     style="width: 150px;margin-bottom:5px"
                     id="custom_text"
-                    placeholder="Enter you undername"
+                    placeholder={$t("publish.enterYourUndername")}
                     bind:value={undername}
                     onkeydown={onUnderNameChanged} />
-                <button onclick={checkName}>Check Validity</button>
+                <button onclick={checkName}>{$t("publish.checkValidity")}</button>
 
-                <span style="font-size:12px;color:coral" class:hidden={!isChecking}>🛑 checking</span>
+                <span style="font-size:12px;color:coral" class:hidden={!isChecking}>🛑 {$t("publish.checking")}</span>
 
                 {#if checked}
                     <span style="font-size:12px" class:hidden={!showAvialableResult}>
                         <span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
-                            ✔ {undername} is available
+                            ✔ {undername} {$t("publish.isAvailable")}
                         </span>
                         <span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
-                            ✖ {undername} is taken
+                            ✖ {undername} {$t("publish.isTaken")}
                         </span>
                     </span>
-                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>⚠invalid character</span>
+                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>⚠{$t("publish.invalidChar")}</span>
                     <span style="font-size:12px;color:darkred" class:hidden={isLinktreeIdValid}>
-                        ⚠invalid Linktree Id
+                        ⚠{$t("publish.invalidLinktreeId")}
                     </span>
                 {/if}
             </div>
             <div style="font-size:12px;color:darkgreen">
-                Publish <code>{linktreeId}</code>
-                to
+                {$t("publish.publish")} <code>{linktreeId}</code>
+                {$t("publish.to")}
                 <code>{undername}_linktree.{gatewayDomainName}</code>
             </div>
             <div>
                 <button disabled={!canPublish} onclick={publish}>
                     {#if walletConnected}
                         {#if isUndernameValid}
-                            <span>Publish {undername}</span>
+                            <span>{$t("publish.isTaken")} {undername}</span>
                         {:else}
-                            <span>Check Validity Before Publishing</span>
+                            <span>{$t("publish.checkBefore")}</span>
                         {/if}
                     {:else}
-                        <span>Connect Wallet Before Publishing</span>
+                        <span>{$t("publish.checkBefore")}</span>
                     {/if}
                 </button>
                 <div class:hidden={!showPublish}>
                     <p style="color:darkblue" class:hidden={!isAoSending}>
                         <!--正在发往AO处理域名解析事项...-->
-                        Sending to AO to handle undername resolution...
+                        {$t("publish.sendingToAO")}
                     </p>
-                    <p style="color:darkorange" class:hidden={!showFail}>
-                        <!--AO处理过程中遇到问题，请稍候再试-->
+                    <p style="color:darkorange" class:hidden={!showFail}>                       
                         {fialMsg}
                     </p>
                     <div style="color:darkgreen" class:hidden={!showSuccess}>
                         <!-- 解析undername到生效需要一些时间，请过些时间访问你的linktree域名或到本页查看结果-->
-                        <div><strong>Congratulations！your undername has been successfully published.</strong></div>
+                        <div><strong>{$t("publish.congratulations")}</strong></div>
                         <p>
-                            It may take some time to resolve the undername until it takes effect. Please visit your
-                            linktree (https://{undername}_linktree.{gatewayDomainName}) or check the results on this
-                            page later.
+                            {$t("publish.note")}
                         </p>
                     </div>
                 </div>

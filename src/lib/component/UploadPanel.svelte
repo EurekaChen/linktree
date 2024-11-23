@@ -1,5 +1,6 @@
 <script>
   import { upload } from "$lib/upload";
+  import { t } from "$lib/i18n";
 
   let { uploadEnabled=$bindable(), showLinktreeId=$bindable(), linktreeId= $bindable() } = $props();
 
@@ -39,17 +40,17 @@
 
 <button
   disabled={!uploadEnabled}
-  title="Modify this page to active this button"
-  onclick={turboUpload}>Upload this linktree page to Arweave</button
+  title={$t("upload.modifyToActive")}
+  onclick={turboUpload}>{$t("upload.uploadToArweave")}</button
 >
 <p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>
-  Upload your linktree to Arweave...
+  {$t("upload.uploading")}
 </p>
 <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
- Latest Link Tree ID: <code>{linktreeId}</code>
+  {$t("upload.latestId")} <code>{linktreeId}</code>
 </p>
 <p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
-  Upload to Arweave Failed, try it layter.
+  {$t("upload.uploadFailed")} 
 </p>
 
 <style>

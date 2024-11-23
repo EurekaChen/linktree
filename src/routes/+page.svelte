@@ -62,7 +62,7 @@
         }
     }
 
-    let linktreeId = $state("Get linktree Id by upload page to arweave"); //这是demo的id,4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
+    let linktreeId = $state($t("main.linktreeIdPrompt")); //这是demo的id,4zxHDSCFspfjijZy3XY6QMr28LKEgqICwv7iw-zzR3Y
 
     let root = "https://linktree." + gatewayDomainName;
 
@@ -149,7 +149,7 @@
     🖉
 </span>
 <div style="font-size: 14px;" class:hidden={!isLogoEditing}>
-    <label for="class">Enter Logo Url</label>
+    <label for="class">{$t("main.enterLogoUrl")}</label>
     <input
         id="href"
         style="width:350px"
@@ -189,7 +189,7 @@
         {link.text}
     </a>
     <span
-        title="delete"
+        title={$t("main.delete")}
         role="button"
         tabindex="0"
         onkeydown={() => deleteLink(index)}
@@ -205,7 +205,7 @@
     onclick={() => {
         isLinkAdding = true;
     }}>
-    + Add Custom Link
+    {$t("main.addCustomLink")}
 </button>
 <br />
 
@@ -220,12 +220,12 @@
             onclick={() => {
                 isLinkAdding = false;
             }}>
-            ✖close
+            ✖{$t("main.close")}
         </span>
     </div>
     <br />
     <div>
-        <label for="class">Preset</label>
+        <label for="class">{$t("main.preset")}</label>
         <select id="class" class="form-control" bind:value={selectedPreset} onchange={onSelectChange}>
             {#each preset as item}
                 <option value={item}>
@@ -236,24 +236,16 @@
     </div>
 
     <div>
-        <label for="custom_icon">Icon</label>
-        <input
-            class="form-control"
-            type="text"
-            placeholder="Enter Your Icon URL OR Keep Default"
-            bind:value={addLinkIcon} />
+        <label for="custom_icon">{$t("main.icon")}</label>
+        <input class="form-control" type="text" placeholder={$t("main.icon")} bind:value={addLinkIcon} />
     </div>
     <div>
-        <label for="custom_text">Text</label>
-        <input
-            class="form-control"
-            type="text"
-            placeholder="Enter Your Link Text Or Keep Default"
-            bind:value={addLinkText} />
+        <label for="custom_text">{$t("main.lableText")}</label>
+        <input class="form-control" type="text" placeholder={$t("main.textPlaceHolder")} bind:value={addLinkText} />
     </div>
     <div>
-        <label for="custom_text">Link</label>
-        <input class="form-control" type="text" placeholder="Enter Your Link URL" bind:value={addLinkUrl} />
+        <label for="custom_text">{$t("main.link")}</label>
+        <input class="form-control" type="text" placeholder={$t("main.urlPlaceHolder")} bind:value={addLinkUrl} />
     </div>
 
     <a class="button button-{addLinkClass}" href={addLinkUrl} target="_blank" rel="noopener" role="button">
@@ -261,7 +253,7 @@
         {addLinkText}
     </a>
     <br />
-    <button type="submit" onclick={addLink}>Add Link</button>
+    <button type="submit" onclick={addLink}>{$t("main.addLink")}</button>
     <br />
 </div>
 <hr />
@@ -272,7 +264,7 @@
     onclick={() => {
         isPublishUndername = true;
     }}>
-    Publish Undername
+    {$t("main.publishUndername")}
 </button>
 <br />
 
@@ -289,26 +281,26 @@
             onclick={() => {
                 isPublishUndername = false;
             }}>
-            ✖close
+            ✖{$t("main.close")}
         </span>
     </div>
     <PublishPanel {linktreeId} />
 </div>
 <hr />
 <div class:hidden={!undernameReady}>
-    <strong style="color:green">{undername} is ready!</strong>
-    vist
+    <strong style="color:green">{undername} {$t("main.isReady")}</strong>
+    {$t("main.visit")}
     <code>
         <a style="text-decoration: none;" href="https://{undername}_linktree.{gatewayDomainName}">
             https://{undername}_linktree.{gatewayDomainName}
         </a>
     </code>
-    or
-    <code><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a></code>
+    {$t("main.or")}
+    <code><a style="text-decoration: none;" href="/gateway?undername={undername}">{$t("main.moreDomainNames")}</a></code>
 </div>
 <hr />
 <div style="font-size: 14px;">
-    <span role="img" aria-label="Choose Language">🌐{$t('chooseLanguage')}</span>
+    <span role="img" aria-label="Choose Language">🌐{$t("chooseLanguage")}</span>
     <select bind:value={$locale}>
         {#each $locales as value}
             <option {value}>{$t(`lang.${value}`)}</option>
