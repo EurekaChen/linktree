@@ -3,8 +3,7 @@ export default {
     en: {
         lang,
 		chooseLanguage:"Choose UI Language",		
-        main: {
-			defaultLinktreeJson:"defaultLinktree_en.json",
+        main: {			
             settings: "Settings",
             title: "AO Classic Blackjack",
             installWallet: "Install Wallet",
@@ -16,8 +15,7 @@ export default {
     zh: {
         lang,
 		chooseLanguage:"选择界面语言",		
-        main: {
-			defaultLinktreeJson:"defaultLinktree_zh.json",
+        main: {			
             settings: "设置",
             title: "AO经典21点",
             installWallet: "请先安装钱包",
