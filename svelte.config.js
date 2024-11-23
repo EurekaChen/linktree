@@ -7,9 +7,18 @@ export default {
 			// these options are set automatically — see below
 			pages: 'build',
 			assets: 'build',
-			fallback: "index.html",
+			//fallback: "index.html",
 			precompress: false,
 			strict: false
-		})
+		}),
+		prerender: {
+			// 启用预渲染
+			//default: true,
+			// 明确指定需要预渲染的路由
+			entries: [
+				'/',
+				'/gateway'
+			]
+		  }
 	}
 };
