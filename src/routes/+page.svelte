@@ -1,6 +1,8 @@
 <script lang="ts">
     import preset from "./preset.json";
-    import defaultLinktree from "./defaultLinktree.json";
+    import defaultLinktreeImport from "./defaultLinktree.json";
+
+    import { t, locales, locale } from "$lib/i18n";
 
     import { getGatewayDomainName } from "$lib/getGatewayDomainName";
     import { defaultGatewayDomainName, linktreeAntId } from "$lib/constant";
@@ -22,6 +24,22 @@
     log("当前网关：", gatewayDomainName);
 
     //根据当前域名调整相关链接
+    let defaultLinktree;
+    (async () => {
+        let json = $t("main.defaultLinktreeJson") as string;
+        json="/json/"+(json);
+        try {
+            const response = await fetch(json);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            defaultLinktree = await response.json();
+        } catch (error) {
+            console.error("获取默认链接树数据失败:", error);
+            // 可以设置一个默认值
+            defaultLinktree = defaultLinktreeImport;
+        }
+    })();
     let linktree = $state(defaultLinktree);
     let defaultLinktreeJson = JSON.stringify(defaultLinktree);
     let newDefaultLinktreeJson = defaultLinktreeJson.replaceAll(defaultGatewayDomainName, gatewayDomainName);
@@ -305,6 +323,14 @@
     <code><a style="text-decoration: none;" href="/gateway?undername={undername}">more domain names</a></code>
 </div>
 <hr />
+<div style="font-size: 14px;">
+    <span role="img" aria-label="Choose Language">🌐{$t("chooseLanguage")}</span>
+    <select bind:value={$locale}>
+        {#each $locales as value}
+            <option {value}>{$t(`lang.${value}`)}</option>
+        {/each}
+    </select>
+</div>
 
 <style>
     .hidden {

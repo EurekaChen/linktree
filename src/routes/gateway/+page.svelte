@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { t, locales, locale } from "$lib/i18n"
     import { log } from "$lib/store/Debug";
     import { onMount } from "svelte";
 
@@ -185,6 +186,14 @@
     class="avatar"
     srcset="https://arweave.net/8MfM94Fd7MRBeQ9-265gGL-EgqMXE6OINSZx5bAu780 2x"
     alt="Gateways" />
+    <div style="font-size: 14px;">
+        <span role="img" aria-label="Choose Language" >🌐Choose Languge</span>
+        <select bind:value={$locale} style="margin-bottom: 0px;">
+            {#each $locales as value}
+                <option {value}>{$t(`lang.${value}`)}</option>
+            {/each}
+        </select>
+    </div>
 
 <h1>{title}</h1>
 
