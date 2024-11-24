@@ -7,7 +7,8 @@ export default {
 			// these options are set automatically — see below
 			pages: 'build',
 			assets: 'build',
-			//fallback: "index.html",
+			//fallback:false,
+			fallback: "index.html",
 			precompress: false,
 			strict: false
 		}),
@@ -16,7 +17,7 @@ export default {
 			//default: true,
 			// 明确指定需要预渲染的路由
 			entries: [
-				'/',
+				'*',
 				'/gateway'
 			]
 		  }
