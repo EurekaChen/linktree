@@ -46,10 +46,10 @@
 <p style="font-size: 12px;margin-bottom:5px;" class:hidden={!isUploading}>
   {$t("upload.uploading")}
 </p>
-<p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!showLinktreeId}>
+<p style="font-size:12px; margin-bottom:5px;color:green" class:hidden={!showLinktreeId}>
   {$t("upload.latestId")} <code>{linktreeId}</code>
 </p>
-<p style="font-size:12px; margin-bottom:5px;color:darkred" class:hidden={!uploadFailed}>
+<p style="font-size:12px; margin-bottom:5px;color:red" class:hidden={!uploadFailed}>
   {$t("upload.uploadFailed")} 
 </p>
 

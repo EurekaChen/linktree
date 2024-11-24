@@ -359,7 +359,7 @@
             </button>
         {/if}
     </div>
-    <p style="font-size:12px; margin-bottom:5px;color:darkgreen" class:hidden={!walletConnected}>
+    <p style="font-size:12px; margin-bottom:5px;color:green" class:hidden={!walletConnected}>
         {$t("publish.walletAddress")}
         <code>{activeAddress}</code>
     </p>
@@ -459,27 +459,27 @@
 
                 {#if checked}
                     <span style="font-size:12px" class:hidden={!showAvialableResult}>
-                        <span style="font-size:12px;color:darkgreen" class:hidden={!nameAvailable}>
+                        <span style="font-size:12px;color:green" class:hidden={!nameAvailable}>
                             ✔ {undername}
                             {$t("publish.isAvailable")}
                         </span>
-                        <span style="font-size:12px;color:darkorange" class:hidden={nameAvailable}>
+                        <span style="font-size:12px;color:orange" class:hidden={nameAvailable}>
                             ✖ {undername}
                             {$t("publish.isTaken")}
                         </span>
                     </span>
-                    <span style="font-size:12px;color:darkred" class:hidden={isCharValid}>
+                    <span style="font-size:12px;color:red" class:hidden={isCharValid}>
                         ⚠{$t("publish.invalidChar")}
                     </span>
-                    <span style="font-size:12px;color:darkred" class:hidden={isAtLeast3}>
+                    <span style="font-size:12px;color:red" class:hidden={isAtLeast3}>
                         ⚠{$t("publish.atLeast3")}
                     </span>
-                    <span style="font-size:12px;color:darkred" class:hidden={isLinktreeIdValid}>
+                    <span style="font-size:12px;color:red" class:hidden={isLinktreeIdValid}>
                         ⚠{$t("publish.invalidLinktreeId")}
                     </span>
                 {/if}
             </div>
-            <div style="font-size:12px;color:darkgreen">
+            <div style="font-size:12px;color:green">
                 {$t("publish.publish")}
                 <code>{linktreeId}</code>
                 {$t("publish.to")}
@@ -498,13 +498,13 @@
                     {/if}
                 </button>
                 <div class:hidden={!showPublish}>
-                    <p style="color:darkblue" class:hidden={!isAoSending}>
+                    <p style="color:blue" class:hidden={!isAoSending}>
                         {$t("publish.sendingToAO")}
                     </p>
-                    <p style="color:darkorange" class:hidden={!showFail}>
+                    <p style="color:orange" class:hidden={!showFail}>
                         {fialMsg}
                     </p>
-                    <div style="color:darkgreen" class:hidden={!showSuccess}>
+                    <div style="color:green" class:hidden={!showSuccess}>
                         <div><strong>{$t("publish.congratulations")}</strong></div>
                         <p>
                             {$t("publish.note")}
