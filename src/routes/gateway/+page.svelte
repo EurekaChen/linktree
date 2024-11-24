@@ -354,14 +354,9 @@
 
     th {
         padding: 4px;
-        border: 1px solid #ddd;
-        background-color: #f2f2f2;
+        border: 1px solid #ddd;       
         text-align: center;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+    }    
 
     th button {
         background: none;
