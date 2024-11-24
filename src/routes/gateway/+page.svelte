@@ -6,7 +6,7 @@
     let domain = "hello_linktree";
     let isChecking = $state(false);
     //let title = $state($t("gateway.gatewayAvailabilityCheck"));
-    let title=""; //$t("gateway.gatewayAvailabilityCheck");
+    let title = ""; //$t("gateway.gatewayAvailabilityCheck");
     let description = $state("");
 
     const namePattern = /^(?:[a-zA-Z0-9_-]+)$/; //名称允许字符，字母和连字符和下划线（来自ar.iob除去@)
@@ -204,7 +204,11 @@
     <!-- <p>{@html description}</p> -->
     <button onclick={checkGateways}>{isChecking ? $t("gateway.stopChecking") : $t("gateway.checkAll")}</button>
     <p style="font-size:14px">
-        <span>{$t("gateway.totalJoined")} <strong> {gateways.length} </strong> ({$t("gateway.delayNote")})</span>
+        <span>
+            {$t("gateway.totalJoined")}
+            <strong>{gateways.length}</strong>
+            ({$t("gateway.delayNote")})
+        </span>
         <span class:hidden={!isChecking}>
             {$t("gateway.checkCount")}
             <strong>{checked}</strong>
@@ -315,8 +319,11 @@
         <tbody>
             {#each leavingGateways as gateway}
                 <tr>
-                    <td title={gateway.label}><a href="{gateway.protocol}://{gateway.fqdn}" rel="noopener noreferrer" 
-                        target="_blank">{gateway.fqdn}</a></td>
+                    <td title={gateway.label}>
+                        <a href="{gateway.protocol}://{gateway.fqdn}" rel="noopener noreferrer" target="_blank">
+                            {gateway.fqdn}
+                        </a>
+                    </td>
                     <td>{gateway.startTime}</td>
                     <td>{gateway.stake}</td>
                 </tr>
@@ -354,9 +361,9 @@
 
     th {
         padding: 4px;
-        border: 1px solid #ddd;       
+        border: 1px solid #ddd;
         text-align: center;
-    }    
+    }
 
     th button {
         background: none;
