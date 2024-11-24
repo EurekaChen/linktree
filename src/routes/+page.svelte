@@ -207,7 +207,7 @@
 </button>
 <br />
 
-<div style="border:1px solid gray;padding:8px; background-color:#e3f2fd;border-radius:4px" class:hidden={!isLinkAdding}>
+<div style="border:1px solid gray;padding:8px; border-radius:4px;box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);" class:hidden={!isLinkAdding}>
     <div style="text-align: right;">
         <span
             role="button"
@@ -267,7 +267,7 @@
 <br />
 
 <div
-    style="border:1px solid gray;padding:14px; background-color:#e3f2fd;border-radius:4px"
+    style="border:1px solid gray;padding:14px;border-radius:4px;box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.2);"
     class:hidden={!isPublishUndername}>
     <div style="text-align: right;">
         <span

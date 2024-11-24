@@ -366,45 +366,47 @@
     <hr />
 
     {#if undernames.length > 0}
-        <table
-            style="font-size:12px;background-color:#bbdefb;width:100%;border:1px solid #ddd;border-collapse:collapse;">
-            <caption style="font-size: 14px;">
-                <strong>{$t("publish.yourUndernames")}</strong>
-                ({$t("publish.max5Free")})
-            </caption>
-            <thead>
-                <tr style="background:#f5f5f5">
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.undername")}</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.linktreeId")}</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.fork")}</th>
-                    <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.delete")}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each undernames as undername}
+        <div style="border:1px dashed gray; padding:5px;border-radius:4px;">
+            <table
+                style="font-size:12px;width:100%;border:1px dashed #ddd;border-radius:4px; border-collapse:collapse;">
+                <caption style="font-size: 14px;">
+                    <strong>{$t("publish.yourUndernames")}</strong>
+                    ({$t("publish.max5Free")})
+                </caption>
+                <thead>
                     <tr>
-                        <td style="padding:4px;border:1px solid #ddd">
-                            <a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">
-                                {undername.undername}
-                            </a>
-                        </td>
-                        <td style="padding:4px;border:1px solid #ddd">{undername.target}</td>
-                        <td style="padding:4px;border:1px solid #ddd">
-                            <button>
-                                <a
-                                    href="https://linktree.{gatewayDomainName}?fork={undername.undername}"
-                                    style="text-decoration:none">
-                                    🖉
-                                </a>
-                            </button>
-                        </td>
-                        <td style="padding:4px;border:1px solid #ddd">
-                            <button onclick={() => removeUndername(undername.undername)}>✖</button>
-                        </td>
+                        <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.undername")}</th>
+                        <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.linktreeId")}</th>
+                        <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.fork")}</th>
+                        <th style="padding:4px;text-align:center;border:1px solid #ddd">{$t("publish.delete")}</th>
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {#each undernames as undername}
+                        <tr>
+                            <td style="padding:4px;border:1px solid #ddd">
+                                <a href="https://{undername.undername}_linktree.{gatewayDomainName}" target="_blank">
+                                    {undername.undername}
+                                </a>
+                            </td>
+                            <td style="padding:4px;border:1px solid #ddd">{undername.target}</td>
+                            <td style="padding:4px;border:1px solid #ddd">
+                                <button>
+                                    <a
+                                        href="https://linktree.{gatewayDomainName}?fork={undername.undername}"
+                                        style="text-decoration:none">
+                                        🖉
+                                    </a>
+                                </button>
+                            </td>
+                            <td style="padding:4px;border:1px solid #ddd">
+                                <button onclick={() => removeUndername(undername.undername)}>✖</button>
+                            </td>
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </div>
         {#if isRemoving}
             <div>{$t("publish.removing")}</div>
         {/if}
@@ -416,12 +418,14 @@
         <div>{$t("publish.noSubmitted")}</div>
     {/if}
     <hr />
-    <div style="font-size: 14px; font-weight:bolder">{$t("publish.publishNew")}</div>
 
     {#if antWarning}
-        <div style="color:orangered;margin:10px">{$t("publish.antWarning")}</div>
+        <div style="color:orangered;border:1px dashed gray;border-radius:4px;margin:10px">
+            {$t("publish.antWarning")}
+        </div>
     {:else}
-        <div style="background-color: #bbdefb;padding:10px; font-size:14px">
+        <div style="border:1px dashed gray; padding:10px;border-radius:4px; font-size:14px">
+            <div style="font-size: 14px; font-weight:bolder">{$t("publish.publishNew")}</div>
             <div>
                 <label for="custom_text">{$t("publish.linktreeId")}</label>
                 <input
@@ -494,13 +498,13 @@
                     {/if}
                 </button>
                 <div class:hidden={!showPublish}>
-                    <p style="color:darkblue" class:hidden={!isAoSending}>                      
+                    <p style="color:darkblue" class:hidden={!isAoSending}>
                         {$t("publish.sendingToAO")}
                     </p>
                     <p style="color:darkorange" class:hidden={!showFail}>
                         {fialMsg}
                     </p>
-                    <div style="color:darkgreen" class:hidden={!showSuccess}>                       
+                    <div style="color:darkgreen" class:hidden={!showSuccess}>
                         <div><strong>{$t("publish.congratulations")}</strong></div>
                         <p>
                             {$t("publish.note")}
