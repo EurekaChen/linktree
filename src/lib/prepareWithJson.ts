@@ -112,7 +112,7 @@ export function prepareWithJson() {
             const undername = parts[0];
 
             forkLink.href = "https://linktree." + gatewayDomainName + "?fork=" + undername;
-            gatewayLink.href = "https://linktree." + gatewayDomainName + "/gateway?undername=" + undername;
+            gatewayLink.href = "https://linktree." + gatewayDomainName + "/gateway/index.html?undername=" + undername;
 
             content.appendChild(forkLink);
             content.appendChild(gatewayLink);

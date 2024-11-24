@@ -295,7 +295,7 @@
     </code>
     {$t("main.or")}
     <code>
-        <a style="text-decoration: none;" href="/gateway?undername={undername}">{$t("main.moreDomainNames")}</a>
+        <a style="text-decoration: none;" href="/gateway/index.html?undername={undername}">{$t("main.moreDomainNames")}</a>
     </code>
 </div>
 <hr />
