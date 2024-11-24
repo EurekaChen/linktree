@@ -351,7 +351,7 @@
             <span>|</span>
             <button
                 title={$t("publish.commingSoon")}
-                style="font-size: 14px; background-color:#ccc;padding:6px;border-radius:5px;border:1px solid gray"
+                style="font-size: 14px; background-color:#999;padding:6px;border-radius:5px;border:1px solid gray"
                 type="button"
                 disabled
                 onclick={connectMetamask}>
